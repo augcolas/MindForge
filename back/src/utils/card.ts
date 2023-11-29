@@ -1,4 +1,5 @@
-class Card {
+import { Value, Color } from '../app.enum';
+export class Card {
     private _value: Value;
     private _color: Color;
 

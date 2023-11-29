@@ -1,8 +1,11 @@
+import {Card} from "./card";
+import {Combination, Value} from '../app.enum';
+
 const evaluteHand = (cards: Card[]): Combination[] => {
     const combinations: Combination[] = [];
-    if(isRoyalFlush(cards)) combinations.push(Combination.RoyalFlush);
-    if(isStraightFlush(cards)) combinations.push(Combination.StraightFlush);
-    if(isFourOfAKind(cards)) combinations.push(Combination.FourOfAKind);
+    if (isRoyalFlush(cards)) combinations.push(Combination.RoyalFlush);
+    if (isStraightFlush(cards)) combinations.push(Combination.StraightFlush);
+    if (isFourOfAKind(cards)) combinations.push(Combination.FourOfAKind);
     return combinations;
 }
 
@@ -21,7 +24,7 @@ const isRoyalFlush = (cards: Card[]): boolean => {
     return true;
 }
 
-const isStraightFlush=(cards: Card[]): boolean => {
+const isStraightFlush = (cards: Card[]): boolean => {
     const flushColor = cards[0].color; // Assuming the cards are sorted by value
 
     // Vérifier si toutes les cartes ont la même couleur (flush)
@@ -43,13 +46,13 @@ const isStraightFlush=(cards: Card[]): boolean => {
 }
 
 const isFourOfAKind = (cards: Card[]): boolean => {
-        for (let i = 0; i < cards.length - 1; i++) {
-            const currentValue = cards[i].value;
-            const nextValue = cards[i + 1].value;
+    for (let i = 0; i < cards.length - 1; i++) {
+        const currentValue = cards[i].value;
+        const nextValue = cards[i + 1].value;
 
-            if (currentValue !== nextValue - 1) {
-                return false;
-            }
+        if (currentValue !== nextValue - 1) {
+            return false;
         }
+    }
     return true;
 }
