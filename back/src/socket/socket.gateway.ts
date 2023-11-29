@@ -14,6 +14,11 @@ export class SocketGateway implements OnGatewayConnection {
     @WebSocketServer()
     private server: Server;
 
+    private responses: any = {
+        error:"error",
+        infos:"infos",
+    };
+
     constructor(private readonly socketService: SocketService) {
     }
 
@@ -24,9 +29,9 @@ export class SocketGateway implements OnGatewayConnection {
     @SubscribeMessage('join')
     handleJoin(@ConnectedSocket() client: Socket, @MessageBody('roomId') roomId: string): void {
         if (this.socketService.joinRoom(client, roomId)) {
-            this.server.in(roomId).emit('join', `${client.id} has join the room`);
+            this.server.in(roomId).emit(this.responses.infos, `${client.id} has join the room`);
         } else {
-            client.emit('error', 'You cannot join this room');
+            client.emit(this.responses.error, 'You cannot join this room');
         }
     }
 
