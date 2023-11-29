@@ -11,20 +11,22 @@ export class SocketGateway implements OnGatewayConnection {
 
     constructor(private readonly socketService: SocketService) {}
 
-    handleConnection(socket: Socket): void {
-        const roomUuid = socket.handshake.query.roomId;
+    handleConnection(client: Socket): void {
+        console.log('connected');
+    }
 
-        if(roomUuid === "create-room") this.socketService.createRoom(socket);
-
-        else if(isString(roomUuid) && validUuid(roomUuid) && this.socketService.roomExist(roomUuid)) {
-            this.socketService.joinRoom(socket, roomUuid);
-        }
-         else throw new Error("Cannot handle your query");
+    @SubscribeMessage('create')
+    handleCreate(client: Socket): string {
+        console.log("---- CREATE ----");
+        const id =  this.socketService.createRoom(client);
+        console.log(id);
+        return id;
+        //client.emit('created', id);
     }
 
     @SubscribeMessage('status')
     handleEvent(client:Socket): void {
+        console.log("---- STATUS ----");
         console.log(client.rooms);
-        console.log("STATUS");
     }
 }

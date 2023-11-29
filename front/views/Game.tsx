@@ -4,10 +4,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 export default function Home(){
   return (
     <LinearGradient
-      colors={['rgb(22,42,109)', 'rgb(18,24,52)']}
+      colors={['rgba(27,109,22,1)', 'rgba(23,52,18,1)']}
       style={styles.background}
     >
-      <Text>Open up App.tsx to start working on your app!</Text>
+      <Text>Game</Text>
     </LinearGradient>
   );
 }

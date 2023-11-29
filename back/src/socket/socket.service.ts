@@ -9,10 +9,11 @@ export class SocketService {
 
     private readonly rooms: Room[] = [];
 
-    public createRoom(socket: Socket) {
+    public createRoom(socket: Socket): string {
         const room: Room = {uuid: generateUuid()};
         socket.join(room.uuid);
         this.rooms.push(room);
+        return room.uuid;
     }
 
     joinRoom(socket: Socket, roomId: string) {
