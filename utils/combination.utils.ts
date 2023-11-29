@@ -1,5 +1,3 @@
-
-
 const evaluteHand = (cards: Card[]): Combination[] => {
     const combinations: Combination[] = [];
     if(isRoyalFlush(cards)) combinations.push(Combination.RoyalFlush);
@@ -7,10 +5,6 @@ const evaluteHand = (cards: Card[]): Combination[] => {
     if(isFourOfAKind(cards)) combinations.push(Combination.FourOfAKind);
     return combinations;
 }
-
-
-
-
 
 /**
  * @param cards sorted by value
