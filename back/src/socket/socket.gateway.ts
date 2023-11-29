@@ -8,8 +8,6 @@ import {
 } from '@nestjs/websockets';
 import {Server, Socket} from 'socket.io';
 import {SocketService} from './socket.service';
-import {isString} from "@nestjs/common/utils/shared.utils";
-import {validUuid} from "../utils/shared.utils";
 
 @WebSocketGateway({cors: {origin: '*'}})
 export class SocketGateway implements OnGatewayConnection {
@@ -25,7 +23,11 @@ export class SocketGateway implements OnGatewayConnection {
 
     @SubscribeMessage('join')
     handleJoin(@ConnectedSocket() client: Socket, @MessageBody('roomId') roomId: string): void {
-        if (isString(roomId) && validUuid(roomId)) this.socketService.joinRoom(client, roomId);
+        if (this.socketService.joinRoom(client, roomId)) {
+            this.server.in(roomId).emit('join', `${client.id} has join the room`);
+        } else {
+            client.emit('error', 'You cannot join this room');
+        }
     }
 
     @SubscribeMessage('create')
@@ -35,6 +37,16 @@ export class SocketGateway implements OnGatewayConnection {
         console.log(id);
         return id;
     }
+
+    @SubscribeMessage('start')
+    handleStart(client: Socket): string {
+        console.log("---- START GAME ----");
+        const id = this.socketService.createRoom(client);
+        return id;
+    }
+
+
+
 
     @SubscribeMessage('status')
     handleEvent(client: Socket): void {
