@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9cba1445-d545-450d-b9a5-e269d60e14f2" name="Changes" comment="core : creating back">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/MindForge.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2YD1OJtXijfEEYgKvZFjBf7tzrL" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/augustincolas/Documents/Ynov/Ydays/MindForge",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "ts.external.directory.path": "/Users/augustincolas/Documents/Ynov/Ydays/MindForge/back/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/front" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9cba1445-d545-450d-b9a5-e269d60e14f2" name="Changes" comment="" />
+      <created>1700045302527</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1700045302527</updated>
+      <workItem from="1700045303529" duration="8662000" />
+      <workItem from="1700121310170" duration="2000" />
+      <workItem from="1701245356192" duration="642000" />
+      <workItem from="1701246007692" duration="3420000" />
+    </task>
+    <task id="LOCAL-00001" summary="Init react native project">
+      <option name="closed" value="true" />
+      <created>1700051048092</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1700051048092</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Init react expo project">
+      <option name="closed" value="true" />
+      <created>1700051657029</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1700051657029</updated>
+    </task>
+    <task id="LOCAL-00003" summary="core : add dependencies">
+      <option name="closed" value="true" />
+      <created>1700054058390</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1700054058390</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat : add cards">
+      <option name="closed" value="true" />
+      <created>1700057179636</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1700057179636</updated>
+    </task>
+    <task id="LOCAL-00005" summary="core : rename back name">
+      <option name="closed" value="true" />
+      <created>1700057244405</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1700057244405</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat : adding tokens">
+      <option name="closed" value="true" />
+      <created>1700059041869</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1700059041869</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat : update">
+      <option name="closed" value="true" />
+      <created>1701245988857</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1701245988857</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat : home style">
+      <option name="closed" value="true" />
+      <created>1701248357690</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1701248357690</updated>
+    </task>
+    <task id="LOCAL-00009" summary="core : moving front">
+      <option name="closed" value="true" />
+      <created>1701249511519</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1701249511519</updated>
+    </task>
+    <task id="LOCAL-00010" summary="core : creating back">
+      <option name="closed" value="true" />
+      <created>1701249585886</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1701249585886</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Init react native project" />
+    <MESSAGE value="Init react expo project" />
+    <MESSAGE value="core : add dependencies" />
+    <MESSAGE value="feat : add cards" />
+    <MESSAGE value="core : rename back name" />
+    <MESSAGE value="feat : adding tokens" />
+    <MESSAGE value="feat : update" />
+    <MESSAGE value="feat : home style" />
+    <MESSAGE value="core : creating nest back project" />
+    <MESSAGE value="core : adding back" />
+    <MESSAGE value="core : moving front" />
+    <MESSAGE value="core : creating back" />
+    <option name="LAST_COMMIT_MESSAGE" value="core : creating back" />
+  </component>
+</project>
