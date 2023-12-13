@@ -1,3 +1,7 @@
+export const DATABASE_USER = "root";
+export const DATABASE_PASSWORD = "password";
+export const DATABASE_NAME = "MindForge";
+export const DATABASE_URL = "mongodb://" + DATABASE_USER + ":" + DATABASE_PASSWORD + "@localhost:27017";
 
 export const EMIT_EVENT_GAME = "game"
 export const EMIT_ROOM_STATUS = "room-status"

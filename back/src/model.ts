@@ -4,7 +4,7 @@ export interface Room {
     uuid: string;
     owned: string;
     players: string[];
-    maxPlayer: number;
+    maxPlayers: number;
 }
 
 export interface EventGame {
@@ -13,8 +13,8 @@ export interface EventGame {
 
 export interface PlayerStatus {
     currentRoom?: string;
-    roomPlayerConnected?: number;
-    roomMaxPlayer?: number;
+    roomPlayersConnected?: number;
+    roomMaxPlayers?: number;
     roomOwner?: string;
 }
 

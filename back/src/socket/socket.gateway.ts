@@ -35,27 +35,26 @@ export class SocketGateway implements OnGatewayConnection {
         console.log('connected');
     }
 
+    @SubscribeMessage(LISTENER_EVENT_CREATE_ROOM)
+    async handleCreate(client: PlayerSocket): Promise<string> {
+        return await this.socketService.createRoom(client);
+    }
+
     @SubscribeMessage(LISTENER_EVENT_JOIN_ROOM)
-    handleJoin(@ConnectedSocket() client: PlayerSocket, @MessageBody('roomId') roomId: string): Room {
-        const room = this.socketService.joinRoom(client, roomId);
+    async handleJoin(@ConnectedSocket() client: PlayerSocket, @MessageBody('roomId') roomId: string): Promise<Room> {
+        const room = await this.socketService.joinRoom(client, roomId);
         this.server.in(roomId).emit(EMIT_ROOM_STATUS, room);
         return room;
     }
 
-
-    @SubscribeMessage(LISTENER_EVENT_CREATE_ROOM)
-    handleCreate(client: PlayerSocket): string {
-        return this.socketService.createRoom(client);
-    }
-
     @SubscribeMessage(LISTENER_EVENT_START_GAME)
-    handleStart(client: PlayerSocket): void {
-        this.socketService.startGame(client, this.server);
+    async handleStart(client: PlayerSocket): Promise<void> {
+        await this.socketService.startGame(client, this.server);
     }
 
 
     @SubscribeMessage(LISTENER_EVENT_STATUS)
-    handleStatus(client: PlayerSocket): PlayerStatus {
-        return this.socketService.status(client);
+    async handleStatus(client: PlayerSocket): Promise<PlayerStatus> {
+        return await this.socketService.status(client);
     }
 }
