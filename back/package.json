@@ -6,6 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "seed": "node seed.js",
+    "compose:up": "docker compose up -d",
+    "compose:down": "docker compose down",
+    "init": "npm run compose:down && npm run compose:up && npm run seed",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
