@@ -18,8 +18,6 @@ async function main() {
   const db = client.db(dbName);
   //create collections
   const rooms = db.collection('rooms');
-  //insert rooms
-  const roomsResult = await rooms.insertMany([]);
   return 'done.';
 }
 
