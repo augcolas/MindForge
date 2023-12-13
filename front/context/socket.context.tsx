@@ -6,7 +6,7 @@ import {Room} from "../../back/src/model";
 interface WebSocketContextInterface {
     socket: Socket;
     getRoom: () => Room;
-    createRoom: () => Promise<Room>;
+    createRoom: (playerName: string) => Promise<Room>;
     joinRoom: (roomId: string, playerName: string) => Promise<Room>;
 }
 
@@ -15,7 +15,7 @@ const WebSocketContext = createContext({
     getRoom: (): Room => {
         return null as any
     },
-    createRoom: (): Promise<Room> => {
+    createRoom: (playerName: string): Promise<Room> => {
         return Promise.reject("Unexpected");
     },
     joinRoom: (roomId: string, playerName: string): Promise<Room> => {
@@ -34,9 +34,9 @@ const WebSocketProvider = (props: any): JSX.Element => {
     });
 
 
-        const createRoom = (): Promise<Room> => {
+        const createRoom = (playerName: string): Promise<Room> => {
             return new Promise((resolve, reject) => {
-                socket.emit("create-room", "", (val: Room) => {
+                socket.emit("create-room", {playerName}, (val: Room) => {
                     if (val) {
                         room = val;
                         resolve(val);
