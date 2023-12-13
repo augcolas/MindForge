@@ -48,13 +48,14 @@ export class SocketService {
     }
 
     public async startGame(socket: PlayerSocket, server: Server): Promise<void> {
-        if (await this.canStartGame(socket)) {
+        try {
+            await this.canStartGame(socket);
             const room = await this.findRoom(socket.roomCode);
             if(room) {
                 console.log('Starting game');
             }
-        } else {
-            throw new Error("Cannot start game");
+        }catch (error) {
+            throw error;
         }
     }
 
@@ -75,9 +76,14 @@ export class SocketService {
      *
      *********************************************/
 
-     private async canStartGame(socket: PlayerSocket): Promise<boolean> {
+     private async canStartGame(socket: PlayerSocket): Promise<void> {
         const room = await this.findRoom(socket.roomCode ?? '');
-        return (room !== undefined && socket.id === room.owned.socketId)
+        if(!room) {
+            throw new Error("Room not found");
+        }
+        if(socket.id !== room.owned.socketId) {
+            throw new Error("You are not the owner of the room");
+        }
     }
 
     private async canJoinRoom(socket: PlayerSocket, roomId: string): Promise<void> {
