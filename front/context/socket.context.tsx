@@ -28,7 +28,6 @@ const WebSocketProvider = (props: any): JSX.Element => {
         return new Promise((resolve, reject) => {
             socket.emit("create-room", "", (val: Room) => {
                 if (val) {
-                    console.log("val", val);
                     room = val;
                     resolve(val);
                 } else {

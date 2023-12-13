@@ -6,8 +6,8 @@ export default function Home({navigation}: any) {
     const {createRoom} = useWebSocket();
 
     const onCreateRoom = () => {
-        createRoom().then((roomId: string) => {
-            navigation.navigate('WaitingRoom', {roomId});
+        createRoom().then((room) => {
+            navigation.navigate('WaitingRoom');
         });
 
     }
