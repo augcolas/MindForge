@@ -27,7 +27,8 @@ export class SocketService {
     }
 
     public async joinRoom(socket: PlayerSocket, roomId: string, playerName: string): Promise<Room> {
-        if (await this.canJoinRoom(socket, roomId)) {
+        try {
+            await this.canJoinRoom(socket, roomId);
             const room: Room = await this.findRoom(roomId) as Room;
             socket.join(roomId);
             socket.roomCode = room.code;
@@ -40,9 +41,10 @@ export class SocketService {
             room.players.push(player);
             await this.updateRoom(room);
             return room;
-        } else {
-            throw new Error("Cannot join room");
+        } catch (error) {
+            throw error;
         }
+
     }
 
     public async startGame(socket: PlayerSocket, server: Server): Promise<void> {
@@ -78,12 +80,23 @@ export class SocketService {
         return (room !== undefined && socket.id === room.owned.socketId)
     }
 
-    private async canJoinRoom(socket: PlayerSocket, roomId: string): Promise<boolean> {
+    private async canJoinRoom(socket: PlayerSocket, roomId: string): Promise<void> {
         //TODO: VERIFIER SI IL EST DANS AUCUNE AUTRE ROOM
+
         const room = await this.findRoom(roomId);
+        if(!room) {
+            throw new Error("Room not found");
+        }
+
+        if(room?.players.length === room?.maxPlayers) {
+            throw new Error("The room is full");
+        }
+
         const present: boolean = room?.players.some(player => player.socketId === socket.id) ?? false;
-        return room !== undefined && room.maxPlayers > room.players.length && !present;
-    }
+        if(present) {
+            throw new Error("You are already in this room");
+        }
+     }
 
     private async findRoom(code: string): Promise<Room | undefined> {
         const db = this.client.db(DATABASE_NAME);
