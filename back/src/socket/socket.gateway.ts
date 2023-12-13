@@ -36,13 +36,22 @@ export class SocketGateway implements OnGatewayConnection {
     }
 
     @SubscribeMessage(LISTENER_EVENT_CREATE_ROOM)
-    async handleCreate(client: PlayerSocket): Promise<Room> {
-        return await this.socketService.createRoom(client);
+    async handleCreate(
+      @ConnectedSocket() client: PlayerSocket,
+      @MessageBody('playerName') playerName: string
+    ): Promise<Room> {
+        console.log('Trying to create room',playerName);
+        return await this.socketService.createRoom(client, playerName);
     }
 
     @SubscribeMessage(LISTENER_EVENT_JOIN_ROOM)
-    async handleJoin(@ConnectedSocket() client: PlayerSocket, @MessageBody('roomId') roomId: string): Promise<Room> {
-        const room = await this.socketService.joinRoom(client, roomId);
+    async handleJoin(
+      @ConnectedSocket() client: PlayerSocket,
+      @MessageBody('roomId') roomId: string,
+      @MessageBody('playerName') playerName: string
+    ): Promise<Room> {
+        console.log('Trying to join room', roomId);
+        const room = await this.socketService.joinRoom(client, roomId, playerName);
         this.server.in(roomId).emit(EMIT_ROOM_STATUS, room);
         return room;
     }

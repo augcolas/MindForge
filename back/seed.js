@@ -19,14 +19,7 @@ async function main() {
   //create collections
   const rooms = db.collection('rooms');
   //insert rooms
-  const roomsResult = await rooms.insertMany([
-    {
-      uuid: '1',
-      owned: 'aug',
-      players: ['aug', 'pe'],
-      maxPlayers: 4,
-    }
-  ]);
+  const roomsResult = await rooms.insertMany([]);
   return 'done.';
 }
 

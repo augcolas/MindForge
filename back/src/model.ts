@@ -2,8 +2,8 @@ import {Card} from "./utils/card";
 
 export interface Room {
     uuid: string;
-    owned: string;
-    players: string[];
+    owned: Player;
+    players: Player[];
     maxPlayers: number;
 }
 
@@ -15,7 +15,12 @@ export interface PlayerStatus {
     currentRoom?: string;
     roomPlayersConnected?: number;
     roomMaxPlayers?: number;
-    roomOwner?: string;
+    roomOwner?: Player;
+}
+
+export interface Player {
+    name: string;
+    socketId: string;
 }
 
 

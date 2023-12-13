@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {Server} from 'socket.io';
 import {MongoClient} from 'mongodb';
 
-import {EventGame, PlayerStatus, Room} from "../model";
+import {PlayerStatus, Room, Player} from "../model";
 import {generateUuid} from "../utils/shared.utils";
 import {PlayerSocket} from "./socket.gateway";
 import {
@@ -10,14 +10,16 @@ import {
     DATABASE_PASSWORD,
     DATABASE_URL,
     DATABASE_NAME,
+    MAX_PLAYERS
 } from "../app.const";
 
 @Injectable()
 export class SocketService {
     private client = new MongoClient(DATABASE_URL);
 
-    public async createRoom(socket: PlayerSocket): Promise<Room> {
-        const room: Room = {uuid: generateUuid(), players: [socket.id], maxPlayers: 4, owned: socket.id};
+    public async createRoom(socket: PlayerSocket,playerName: string): Promise<Room> {
+        const player: Player = {name: playerName, socketId: socket.id};
+        const room: Room = {uuid: generateUuid(), players: [player], maxPlayers: MAX_PLAYERS, owned: player};
         socket.join(room.uuid);
         socket.roomUuid = room.uuid;
 
@@ -27,12 +29,13 @@ export class SocketService {
         return room;
     }
 
-    public async joinRoom(socket: PlayerSocket, roomId: string): Promise<Room> {
+    public async joinRoom(socket: PlayerSocket, roomId: string, playerName: string): Promise<Room> {
+        const player: Player = {name: playerName, socketId: socket.id};
         if (await this.canJoinRoom(socket, roomId)) {
             const room: Room = await this.findRoom(roomId) as Room;
             socket.join(roomId);
             socket.roomUuid = room.uuid;
-            room.players.push(socket.id);
+            room.players.push(player);
             await this.updateRoom(room);
             return room;
         } else {
@@ -44,6 +47,7 @@ export class SocketService {
         if (await this.canStartGame(socket)) {
             const room = await this.findRoom(socket.roomUuid);
             if(room) {
+                console.log('Starting game');
             }
         } else {
             throw new Error("Cannot start game");
@@ -69,13 +73,13 @@ export class SocketService {
 
      private async canStartGame(socket: PlayerSocket): Promise<boolean> {
         const room = await this.findRoom(socket.roomUuid ?? '');
-        return (room !== undefined && socket.id === room.owned)
+        return (room !== undefined && socket.id === room.owned.socketId)
     }
 
     private async canJoinRoom(socket: PlayerSocket, roomId: string): Promise<boolean> {
         //TODO: VERIFIER SI IL EST DANS AUCUNE AUTRE ROOM
         const room = await this.findRoom(roomId);
-        const present: boolean = room?.players.includes(socket.id) ?? false;
+        const present: boolean = room?.players.some(player => player.socketId === socket.id) ?? false;
         return room !== undefined && room.maxPlayers > room.players.length && !present;
     }
 
