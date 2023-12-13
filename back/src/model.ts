@@ -1,7 +1,7 @@
 import {Card} from "./utils/card";
 
 export interface Room {
-    uuid: string;
+    code: string;
     owned: Player;
     players: Player[];
     maxPlayers: number;

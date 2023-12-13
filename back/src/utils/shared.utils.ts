@@ -1,9 +1,13 @@
 import {v4 as uuidv4, validate} from 'uuid';
 import {Socket} from "socket.io";
 
-export const generateUuid = () => {
-    return uuidv4();
+export const generateCode = () => {
+    const codeArray = Array.from({ length: 5 }, () => Math.floor(Math.random() * 10));
+    const code = codeArray.join('');
+    return code;
 }
+
+
 
 export const validUuid = (uuid: string): boolean => {
     return validate(uuid as string);

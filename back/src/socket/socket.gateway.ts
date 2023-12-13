@@ -18,7 +18,7 @@ import {
 import {PlayerStatus, Room} from "../model";
 
 export interface PlayerSocket extends Socket {
-    roomUuid: string;
+    roomCode: string;
 }
 
 

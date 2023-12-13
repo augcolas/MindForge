@@ -10,11 +10,11 @@ export default function WaitingRoom() {
             style={styles.background}
         >
 
-            <Text style={styles.text}>{getRoom().uuid}</Text>
+            <Text style={styles.text}>{getRoom().code}</Text>
             <View style={styles.containerOwner}>
                 <Text style={[styles.text, styles.textCenter]}>Owner</Text>
                 <View style={styles.containerOwnerRectangle}>
-                    <Text style={styles.ownerText}>{getRoom().owned}</Text>
+                    <Text style={styles.ownerText}>{getRoom().owned.name}</Text>
                 </View>
             </View>
 
@@ -22,7 +22,7 @@ export default function WaitingRoom() {
             <View style={styles.containerPlayers}>
                 <Text style={styles.text}>Players in rooms: </Text>
                 <View style={styles.containerPlayersRectangle}>
-                    {getRoom().players.map((player) => <Text style={styles.containerPlayersText}>{player}</Text>)}
+                    {getRoom().players.map((player) => <Text id={player.socketId} style={styles.containerPlayersText}>{player.name}</Text>)}
                 </View>
             </View>
 

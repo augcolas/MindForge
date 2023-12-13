@@ -2,16 +2,10 @@ import {Injectable} from '@nestjs/common';
 import {Server} from 'socket.io';
 import {MongoClient} from 'mongodb';
 
-import {PlayerStatus, Room, Player} from "../model";
-import {generateUuid} from "../utils/shared.utils";
+import {Player, PlayerStatus, Room} from "../model";
+import {generateCode} from "../utils/shared.utils";
 import {PlayerSocket} from "./socket.gateway";
-import {
-    DATABASE_USER,
-    DATABASE_PASSWORD,
-    DATABASE_URL,
-    DATABASE_NAME,
-    MAX_PLAYERS
-} from "../app.const";
+import {DATABASE_NAME, DATABASE_URL, MAX_PLAYERS} from "../app.const";
 
 @Injectable()
 export class SocketService {
@@ -19,9 +13,9 @@ export class SocketService {
 
     public async createRoom(socket: PlayerSocket,playerName: string): Promise<Room> {
         const player: Player = {name: playerName, socketId: socket.id};
-        const room: Room = {uuid: generateUuid(), players: [player], maxPlayers: MAX_PLAYERS, owned: player};
-        socket.join(room.uuid);
-        socket.roomUuid = room.uuid;
+        const room: Room = {code: generateCode(), players: [player], maxPlayers: MAX_PLAYERS, owned: player};
+        socket.join(room.code);
+        socket.roomCode = room.code;
 
         const db = this.client.db(DATABASE_NAME);
         await db.collection('rooms').insertOne(room);
@@ -34,7 +28,7 @@ export class SocketService {
         if (await this.canJoinRoom(socket, roomId)) {
             const room: Room = await this.findRoom(roomId) as Room;
             socket.join(roomId);
-            socket.roomUuid = room.uuid;
+            socket.roomCode = room.code;
             room.players.push(player);
             await this.updateRoom(room);
             return room;
@@ -45,7 +39,7 @@ export class SocketService {
 
     public async startGame(socket: PlayerSocket, server: Server): Promise<void> {
         if (await this.canStartGame(socket)) {
-            const room = await this.findRoom(socket.roomUuid);
+            const room = await this.findRoom(socket.roomCode);
             if(room) {
                 console.log('Starting game');
             }
@@ -55,9 +49,9 @@ export class SocketService {
     }
 
     public async status(socket: PlayerSocket): Promise<PlayerStatus> {
-        const room = await this.findRoom(socket.roomUuid);
+        const room = await this.findRoom(socket.roomCode);
         return {
-            currentRoom: room?.uuid,
+            currentRoom: room?.code,
             roomPlayersConnected: room?.players.length,
             roomOwner: room?.owned,
             roomMaxPlayers: room?.maxPlayers
@@ -72,7 +66,7 @@ export class SocketService {
      *********************************************/
 
      private async canStartGame(socket: PlayerSocket): Promise<boolean> {
-        const room = await this.findRoom(socket.roomUuid ?? '');
+        const room = await this.findRoom(socket.roomCode ?? '');
         return (room !== undefined && socket.id === room.owned.socketId)
     }
 
@@ -83,12 +77,12 @@ export class SocketService {
         return room !== undefined && room.maxPlayers > room.players.length && !present;
     }
 
-    private async findRoom(uuid: string): Promise<Room | undefined> {
+    private async findRoom(code: string): Promise<Room | undefined> {
         const db = this.client.db(DATABASE_NAME);
-        const room = await db.collection('rooms').findOne({uuid: uuid});
+        const room = await db.collection('rooms').findOne({code: code});
         if(room) {
             return {
-                uuid: room.uuid,
+                code: room.code,
                 players: room.players,
                 maxPlayers: room.maxPlayer,
                 owned: room.owned
@@ -100,6 +94,6 @@ export class SocketService {
 
     private async updateRoom(room: Room): Promise<void> {
         const db = this.client.db(DATABASE_NAME);
-        await db.collection('rooms').updateOne({uuid: room.uuid}, {$set: room});
+        await db.collection('rooms').updateOne({code: room.code}, {$set: room});
     }
 }
