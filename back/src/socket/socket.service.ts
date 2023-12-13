@@ -23,28 +23,26 @@ export class SocketService {
         const db = this.client.db(DATABASE_NAME);
         await db.collection('rooms').insertOne(room);
 
+        console.log('Player:' + playerName + ' created room:' + room.code)
         return room;
     }
 
     public async joinRoom(socket: PlayerSocket, roomId: string, playerName: string): Promise<Room> {
-        try {
-            await this.canJoinRoom(socket, roomId);
-            const room: Room = await this.findRoom(roomId) as Room;
-            socket.join(roomId);
-            socket.roomCode = room.code;
+        await this.canJoinRoom(socket, roomId);
+        const room: Room = await this.findRoom(roomId) as Room;
+        socket.join(roomId);
+        socket.roomCode = room.code;
 
-            if(!playerName){
-                playerName = 'Anonymous-' + (room.players.length+1);
-            }
-
-            const player: Player = {name: playerName, socketId: socket.id};
-            room.players.push(player);
-            await this.updateRoom(room);
-            return room;
-        } catch (error) {
-            throw error;
+        if(!playerName){
+            playerName = 'Anonymous-' + (room.players.length+1);
         }
 
+        const player: Player = {name: playerName, socketId: socket.id};
+        room.players.push(player);
+        await this.updateRoom(room);
+
+        console.log('Player:' + playerName + ' joined room:' + roomId)
+        return room;
     }
 
     public async startGame(socket: PlayerSocket, server: Server): Promise<void> {

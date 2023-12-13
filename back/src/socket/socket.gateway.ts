@@ -48,16 +48,24 @@ export class SocketGateway implements OnGatewayConnection {
       @ConnectedSocket() client: PlayerSocket,
       @MessageBody('roomId') roomId: string,
       @MessageBody('playerName') playerName: string
-    ): Promise<Room> {
-        console.log('Trying to join room', roomId);
-        const room = await this.socketService.joinRoom(client, roomId, playerName);
-        this.server.in(roomId).emit(EMIT_ROOM_STATUS, room);
-        return room;
+    ): Promise<Room|undefined> {
+        try {
+            const room = await this.socketService.joinRoom(client, roomId, playerName);
+            this.server.in(roomId).emit(EMIT_ROOM_STATUS, room);
+            return room;
+        } catch (error) {
+            console.log(error.message);
+        }
+
     }
 
     @SubscribeMessage(LISTENER_EVENT_START_GAME)
     async handleStart(client: PlayerSocket): Promise<void> {
-        await this.socketService.startGame(client, this.server);
+        try {
+            await this.socketService.startGame(client,this.server);
+        }catch (error) {
+            console.log(error);
+        }
     }
 
 
