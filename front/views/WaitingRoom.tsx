@@ -1,20 +1,32 @@
 import {Button, StyleSheet, Text, View} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useWebSocket} from "../context/socket.context";
+import {useEffect, useState} from "react";
+import {Room} from "../../back/src/model";
 
 export default function WaitingRoom() {
-    const {getRoom} = useWebSocket();
+    const {getRoom, socket} = useWebSocket();
+    const [room, setRoom] = useState(getRoom());
+
+
+    useEffect(() => {
+        socket.on("room-status", (data) => {
+            setRoom(data);
+        })
+    }, []);
+
+
     return (
         <LinearGradient
             colors={['rgba(27,109,22,1)', 'rgba(23,52,18,1)']}
             style={styles.background}
         >
 
-            <Text style={styles.text}>{getRoom().code}</Text>
+            <Text style={styles.text}>{room.code}</Text>
             <View style={styles.containerOwner}>
                 <Text style={[styles.text, styles.textCenter]}>Owner</Text>
                 <View style={styles.containerOwnerRectangle}>
-                    <Text style={styles.ownerText}>{getRoom().owned.name}</Text>
+                    <Text style={styles.ownerText}>{room.owned.name}</Text>
                 </View>
             </View>
 
@@ -22,7 +34,7 @@ export default function WaitingRoom() {
             <View style={styles.containerPlayers}>
                 <Text style={styles.text}>Players in rooms: </Text>
                 <View style={styles.containerPlayersRectangle}>
-                    {getRoom().players.map((player) => <Text id={player.socketId} style={styles.containerPlayersText}>{player.name}</Text>)}
+                    {room.players.map((player) => <Text key={player.socketId} style={styles.containerPlayersText}>{player.name}</Text>)}
                 </View>
             </View>
 
