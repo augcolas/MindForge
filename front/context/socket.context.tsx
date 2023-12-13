@@ -24,7 +24,7 @@ const WebSocketContext = createContext({
 });
 
 const WebSocketProvider = (props: any): JSX.Element => {
-        const socket: Socket = io("http://10.33.70.225:3000");
+        const socket: Socket = io("http://127.0.0.1:3000");
 
         let room: Room = null as any;
 

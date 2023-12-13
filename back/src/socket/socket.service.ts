@@ -9,7 +9,7 @@ import {DATABASE_NAME, DATABASE_URL, MAX_PLAYERS} from "../app.const";
 
 @Injectable()
 export class SocketService {
-    private client = new MongoClient(DATABASE_URL);
+    private db = new MongoClient(DATABASE_URL).db(DATABASE_NAME);
 
     public async createRoom(socket: PlayerSocket,playerName: string): Promise<Room> {
         if(!playerName){
@@ -20,8 +20,7 @@ export class SocketService {
         socket.join(room.code);
         socket.roomCode = room.code;
 
-        const db = this.client.db(DATABASE_NAME);
-        await db.collection('rooms').insertOne(room);
+        await this.db.collection('rooms').insertOne(room);
 
         console.log('Player:' + playerName + ' created room:' + room.code)
         return room;
@@ -103,8 +102,7 @@ export class SocketService {
      }
 
     private async findRoom(code: string): Promise<Room | undefined> {
-        const db = this.client.db(DATABASE_NAME);
-        const room = await db.collection('rooms').findOne({code: code});
+        const room = await this.db.collection('rooms').findOne({code: code});
         if(room) {
             return {
                 code: room.code,
@@ -118,7 +116,6 @@ export class SocketService {
     }
 
     private async updateRoom(room: Room): Promise<void> {
-        const db = this.client.db(DATABASE_NAME);
-        await db.collection('rooms').updateOne({code: room.code}, {$set: room});
+        await this.db.collection('rooms').updateOne({code: room.code}, {$set: room});
     }
 }
