@@ -40,7 +40,6 @@ export class SocketGateway implements OnGatewayConnection {
       @ConnectedSocket() client: PlayerSocket,
       @MessageBody('playerName') playerName: string
     ): Promise<Room> {
-        console.log('Trying to create room',playerName);
         return await this.socketService.createRoom(client, playerName);
     }
 

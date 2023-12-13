@@ -12,6 +12,9 @@ export class SocketService {
     private client = new MongoClient(DATABASE_URL);
 
     public async createRoom(socket: PlayerSocket,playerName: string): Promise<Room> {
+        if(!playerName){
+            playerName = 'Anonymous-1';
+        }
         const player: Player = {name: playerName, socketId: socket.id};
         const room: Room = {code: generateCode(), players: [player], maxPlayers: MAX_PLAYERS, owned: player};
         socket.join(room.code);
@@ -24,11 +27,16 @@ export class SocketService {
     }
 
     public async joinRoom(socket: PlayerSocket, roomId: string, playerName: string): Promise<Room> {
-        const player: Player = {name: playerName, socketId: socket.id};
         if (await this.canJoinRoom(socket, roomId)) {
             const room: Room = await this.findRoom(roomId) as Room;
             socket.join(roomId);
             socket.roomCode = room.code;
+
+            if(!playerName){
+                playerName = 'Anonymous-' + (room.players.length+1);
+            }
+
+            const player: Player = {name: playerName, socketId: socket.id};
             room.players.push(player);
             await this.updateRoom(room);
             return room;
