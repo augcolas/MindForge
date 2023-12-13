@@ -14,10 +14,9 @@ import {
 
 @Injectable()
 export class SocketService {
-    //private readonly _rooms: Room[] = [];
     private client = new MongoClient(DATABASE_URL);
 
-    public async createRoom(socket: PlayerSocket): Promise<string> {
+    public async createRoom(socket: PlayerSocket): Promise<Room> {
         const room: Room = {uuid: generateUuid(), players: [socket.id], maxPlayers: 4, owned: socket.id};
         socket.join(room.uuid);
         socket.roomUuid = room.uuid;
@@ -25,7 +24,7 @@ export class SocketService {
         const db = this.client.db(DATABASE_NAME);
         await db.collection('rooms').insertOne(room);
 
-        return room.uuid;
+        return room;
     }
 
     public async joinRoom(socket: PlayerSocket, roomId: string): Promise<Room> {

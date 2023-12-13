@@ -36,7 +36,7 @@ export class SocketGateway implements OnGatewayConnection {
     }
 
     @SubscribeMessage(LISTENER_EVENT_CREATE_ROOM)
-    async handleCreate(client: PlayerSocket): Promise<string> {
+    async handleCreate(client: PlayerSocket): Promise<Room> {
         return await this.socketService.createRoom(client);
     }
 

@@ -1,14 +1,20 @@
-import {createContext, useContext, useEffect} from "react";
+import {createContext, useContext} from "react";
 import {io, Socket} from "socket.io-client";
+import {Room} from "../../back/src/model";
+
 
 interface WebSocketContextInterface {
     socket: Socket;
-    createRoom: () => Promise<string>;
+    getRoom: () => Room;
+    createRoom: () => Promise<Room>;
 }
 
 const WebSocketContext = createContext({
     socket: null as any,
-    createRoom: (): Promise<string> => {
+    getRoom: (): Room => {
+        return null as any
+    },
+    createRoom: (): Promise<Room> => {
         return Promise.reject("Unexpected");
     },
 });
@@ -16,10 +22,14 @@ const WebSocketContext = createContext({
 const WebSocketProvider = (props: any): JSX.Element => {
     const socket: Socket = io("http://127.0.0.1:3000");
 
-    const createRoom = (): Promise<string> => {
+    let room: Room = null as any;
+
+    const createRoom = (): Promise<Room> => {
         return new Promise((resolve, reject) => {
-            socket.emit("create-room", "", (val: string) => {
+            socket.emit("create-room", "", (val: Room) => {
                 if (val) {
+                    console.log("val", val);
+                    room = val;
                     resolve(val);
                 } else {
                     reject("Error occurred while creating the room");
@@ -28,9 +38,13 @@ const WebSocketProvider = (props: any): JSX.Element => {
         });
     };
 
+    const getRoom = (): Room => {
+        return room;
+    }
 
     const value: WebSocketContextInterface = {
         socket,
+        getRoom,
         createRoom,
     };
 
