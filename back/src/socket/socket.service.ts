@@ -1,15 +1,21 @@
 import {Injectable} from '@nestjs/common';
 import {Server} from 'socket.io';
 import {MongoClient} from 'mongodb';
-
+import {ConfigService} from "@nestjs/config";
 import {Player, PlayerStatus, Room} from "../model";
 import {generateCode} from "../utils/shared.utils";
 import {PlayerSocket} from "./socket.gateway";
-import {DATABASE_NAME, DATABASE_URL, MAX_PLAYERS} from "../app.const";
+import {MAX_PLAYERS} from "../app.const";
 
 @Injectable()
 export class SocketService {
-    private db = new MongoClient(DATABASE_URL).db(DATABASE_NAME);
+    constructor(private configService: ConfigService) {
+    }
+
+    private dbUrl :string = this.configService.get<string>('database.url')!;
+    private dbName :string = this.configService.get<string>('database.name')!;
+
+    private db = new MongoClient(this.dbUrl).db(this.dbName);
 
     public async createRoom(socket: PlayerSocket,playerName: string): Promise<Room> {
         if(!playerName){
