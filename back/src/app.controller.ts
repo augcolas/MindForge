@@ -9,4 +9,9 @@ export class AppController {
   createRoom(): string {
     return this.appService.getHello();
   }
+
+  @Get("/")
+  getHome(): string {
+    return "MindForge Backend";
+  }
 }
