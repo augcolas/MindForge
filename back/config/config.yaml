@@ -2,4 +2,4 @@ database:
   user: root
   password: password
   name: MindForge
-  url : https://mongo-mindforge.rshare.io/
+  url : mongodb://mongo-mindforge.rshare.io/
