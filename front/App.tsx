@@ -14,7 +14,7 @@ export default function App() {
         <NavigationContainer>
             <WebSocketProvider>
                 <Stack.Navigator
-                    initialRouteName="Home"
+                    initialRouteName="Game"
                     screenOptions={{headerShown: false}}
                 >
                     <Stack.Screen
