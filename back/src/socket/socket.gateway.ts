@@ -39,8 +39,15 @@ export class SocketGateway implements OnGatewayConnection {
     async handleCreate(
       @ConnectedSocket() client: PlayerSocket,
       @MessageBody('playerName') playerName: string
-    ): Promise<Room> {
-        return await this.socketService.createRoom(client, playerName);
+    ): Promise<Room|undefined> {
+        try {
+            let room : Room = await this.socketService.createRoom(client, playerName);
+            console.log(playerName + ' created room ' + room.code);
+            return room;
+        }
+        catch (error) {
+            console.log(error.message);
+        }
     }
 
     @SubscribeMessage(LISTENER_EVENT_JOIN_ROOM)
@@ -50,6 +57,7 @@ export class SocketGateway implements OnGatewayConnection {
       @MessageBody('playerName') playerName: string
     ): Promise<Room|undefined> {
         try {
+            console.log('join room')
             const room = await this.socketService.joinRoom(client, roomId, playerName);
             this.server.in(roomId).emit(EMIT_ROOM_STATUS, room);
             return room;
@@ -62,6 +70,7 @@ export class SocketGateway implements OnGatewayConnection {
     @SubscribeMessage(LISTENER_EVENT_START_GAME)
     async handleStart(client: PlayerSocket): Promise<void> {
         try {
+            console.log('start game')
             await this.socketService.startGame(client,this.server);
         }catch (error) {
             console.log(error);
@@ -71,6 +80,7 @@ export class SocketGateway implements OnGatewayConnection {
 
     @SubscribeMessage(LISTENER_EVENT_STATUS)
     async handleStatus(client: PlayerSocket): Promise<PlayerStatus> {
+        console.log('status')
         return await this.socketService.status(client);
     }
 }

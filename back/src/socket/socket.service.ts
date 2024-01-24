@@ -26,8 +26,9 @@ export class SocketService {
         socket.join(room.code);
         socket.roomCode = room.code;
 
-        await this.db.collection('rooms').insertOne(room);
+        console.log(this.dbName);
 
+        await this.db.collection('rooms').insertOne(room);
         console.log('Player:' + playerName + ' created room:' + room.code)
         return room;
     }

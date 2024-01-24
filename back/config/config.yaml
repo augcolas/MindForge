@@ -1,5 +1,3 @@
 database:
-  user: root
-  password: password
   name: MindForge
-  url : mongodb://mongo-mindforge.rshare.io/
+  url : mongodb://root:password@localhost:27017
