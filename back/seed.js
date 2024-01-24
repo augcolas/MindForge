@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 
 // Connection URL
-const client = new MongoClient('mongodb://root:password@mongo-mindforge.rshare.io:27017');
+const client = new MongoClient('mongodb://root:password@localhost:27017');
 
 async function main() {
   // Use connect method to connect to the server

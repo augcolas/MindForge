@@ -34,23 +34,15 @@ export default function WaitingRoom() {
 
             <View style={waitingRoomStyles.contentContainer}>
                 <View style={waitingRoomStyles.leftContainer}>
-                    <Text style={[waitingRoomStyles.text, waitingRoomStyles.centerText]}>Owner</Text>
-                    <View style={waitingRoomStyles.ownerRectangle}>
-                        <Text style={waitingRoomStyles.ownerText}>{room.owned.name}</Text>
+                    <Text style={[waitingRoomStyles.text, waitingRoomStyles.centerText]}>Players in room:</Text>
+                    <View style={waitingRoomStyles.playersRectangle}>
+                        <Text style={waitingRoomStyles.playerText}>{room.owned.name}</Text>
+                        {room.players.map((player) => {
+                            if (player.socketId !== room.owned.socketId) {
+                                return renderPlayer(player);
+                            }
+                        })}
                     </View>
-
-                    {room.players.length > 1 && (
-                        <>
-                            <Text style={[waitingRoomStyles.text, waitingRoomStyles.centerText]}>Players in room:</Text>
-                            <View style={waitingRoomStyles.playersRectangle}>
-                                {room.players.map((player) => {
-                                    if (player.socketId !== room.owned.socketId) {
-                                        return renderPlayer(player);
-                                    }
-                                })}
-                            </View>
-                        </>
-                    )}
                 </View>
 
                 <View style={waitingRoomStyles.rightContainer}>
