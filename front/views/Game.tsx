@@ -5,6 +5,10 @@ import {LinearGradient} from "expo-linear-gradient";
 
 export default function Game() {
     const [orientation, setOrientation] = useState(1);
+    const [cards, setCards] = useState([]);
+    const [tokens, setTokens] = useState([]);
+
+
     useEffect(() => {
         lockOrientation();
     }, []);

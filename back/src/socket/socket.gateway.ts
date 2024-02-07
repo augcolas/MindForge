@@ -89,6 +89,6 @@ export class SocketGateway implements OnGatewayConnection {
 
     @SubscribeMessage(LISTENER_EVENT_STATUS)
     async handleStatus(client: PlayerSocket): Promise<PlayerStatus> {
-        return await this.socketService.status(client);
+        return await this.socketService.roomStatus(client);
     }
 }
