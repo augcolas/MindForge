@@ -17,6 +17,7 @@ import {
     LISTENER_EVENT_STATUS
 } from "../app.const";
 import {PlayerStatus, Room} from "../model";
+import {Logger} from "@nestjs/common";
 
 export interface PlayerSocket extends Socket {
     roomCode: string;
@@ -26,15 +27,16 @@ export interface PlayerSocket extends Socket {
 
 @WebSocketGateway({cors: {origin: '*'}})
 export class SocketGateway implements OnGatewayConnection {
+
+    private readonly logger:Logger = new Logger(SocketService.name);
+
     @WebSocketServer()
     private server: Server;
 
     constructor(private readonly socketService: SocketService) {
     }
 
-    handleConnection(client: PlayerSocket): void {
-        console.log('connected');
-    }
+    handleConnection(client: PlayerSocket): void {}
 
     @SubscribeMessage(LISTENER_EVENT_CREATE_ROOM)
     async handleCreate(
@@ -42,11 +44,10 @@ export class SocketGateway implements OnGatewayConnection {
       @MessageBody('playerName') playerName: string
     ): Promise<Room|undefined> {
         try {
-            let room : Room = await this.socketService.createRoom(client, playerName);
-            return room;
+            return await this.socketService.createRoom(client, playerName);
         }
         catch (error) {
-            console.log(error.message);
+            this.logger.error(error.message);
         }
     }
 
@@ -59,9 +60,10 @@ export class SocketGateway implements OnGatewayConnection {
         try {
             const room = await this.socketService.joinRoom(client, roomId, playerName);
             this.server.in(roomId).emit(EMIT_ROOM_STATUS, room);
+
             return room;
         } catch (error) {
-            console.log(error.message);
+            this.logger.error(error.message);
         }
 
     }
@@ -78,7 +80,6 @@ export class SocketGateway implements OnGatewayConnection {
     @SubscribeMessage(LISTENER_EVENT_START_GAME)
     async handleStart(client: PlayerSocket): Promise<void> {
         try {
-            console.log('start game')
             await this.socketService.startGame(client,this.server);
         }catch (error) {
             console.log(error);
@@ -88,7 +89,6 @@ export class SocketGateway implements OnGatewayConnection {
 
     @SubscribeMessage(LISTENER_EVENT_STATUS)
     async handleStatus(client: PlayerSocket): Promise<PlayerStatus> {
-        console.log('status')
         return await this.socketService.status(client);
     }
 }
