@@ -14,7 +14,7 @@
 - Documentation approfondie sur les méthodes utilisées dans le contexte du jeu de poker.
 - Choix d'utiliser un modèle préexistant d'OpenAI pour gagner du temps.
 - Planification pour le fine-tuning du modèle.
-- Début des tests de l'IA.
+- Début des tests sur l'IA.
 
 ## Tâches Restantes
 
