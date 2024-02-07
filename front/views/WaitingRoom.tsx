@@ -1,12 +1,13 @@
-import { Button, Text, View, Image } from 'react-native';
+import { Button, Text, View, Image, TouchableOpacity } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useWebSocket } from "../context/socket.context";
 import { useEffect, useState } from "react";
 import { waitingRoomStyles } from '../styles/WaitingRoomStyles';
+import { commonStyles } from '../styles/CommonStyles';
 import logo from '../assets/Logo.png';
 import React from "react";
 
-export default function WaitingRoom() {
+export default function WaitingRoom({ navigation }: any) {
     const { getRoom, socket } = useWebSocket();
     const [room, setRoom] = useState(getRoom());
 
@@ -21,6 +22,11 @@ export default function WaitingRoom() {
             {player.name}
         </Text>
     );
+
+    const onStartGame = () => {
+        navigation.navigate("Game");
+        socket.emit("start-game");
+    }
 
     return (
         <LinearGradient
@@ -46,7 +52,12 @@ export default function WaitingRoom() {
                 </View>
 
                 <View style={waitingRoomStyles.rightContainer}>
-                    <Button title={"Start game"} color='red'></Button>
+                    <TouchableOpacity
+                        onPress={() => onStartGame()}
+                        style={commonStyles.primaryButton}
+                    >
+                        <Text style={commonStyles.primaryButtonText}>Start game</Text>
+                    </TouchableOpacity>
                     <View style={waitingRoomStyles.spacesButton}></View>
                     <Button title={"Quit room"} color='black'></Button>
                 </View>

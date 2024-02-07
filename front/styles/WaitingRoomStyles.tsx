@@ -68,5 +68,5 @@ export const waitingRoomStyles = StyleSheet.create({
     logo: {
         width: 200, // Ajustez la largeur selon vos besoins
         height: 200, // Ajustez la hauteur selon vos besoins
-    },
+    }
 });
