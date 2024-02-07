@@ -54,6 +54,11 @@ export const waitingRoomStyles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 5,
     },
+    myselfText: {
+        color: '#efa538',
+        fontSize: 16,
+        marginBottom: 5,
+    },
     footerButton: {
         backgroundColor: '#007BFF',
         padding: 10,

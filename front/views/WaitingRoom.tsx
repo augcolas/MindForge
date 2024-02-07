@@ -22,9 +22,9 @@ export default function WaitingRoom({ route, navigation }: any) {
     }, []);
 
     const renderPlayer = (player: any) => (
-        <Text key={player.socketId} style={waitingRoomStyles.playerText}>
-            {player.name}
-        </Text>
+      <Text key={player.socketId} style={player.name === myself ? waitingRoomStyles.myselfText : waitingRoomStyles.playerText}>
+          {player.name}
+      </Text>
     );
 
     const onStartGame = () => {
@@ -50,7 +50,7 @@ export default function WaitingRoom({ route, navigation }: any) {
                 <View style={waitingRoomStyles.leftContainer}>
                     <Text style={[waitingRoomStyles.text, waitingRoomStyles.centerText]}>Players in room:</Text>
                     <View style={waitingRoomStyles.playersRectangle}>
-                        <Text style={waitingRoomStyles.playerText}>{room.owned.name}</Text>
+                        {renderPlayer(room.owned)}
                         {room.players.map((player) => {
                             if (player.socketId !== room.owned.socketId) {
                                 return renderPlayer(player);
