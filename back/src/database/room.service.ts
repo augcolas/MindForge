@@ -2,18 +2,14 @@ import {Player, PlayerStatus, Room} from "../model";
 import {generateCode} from "../utils/shared.utils";
 import {MAX_PLAYERS} from "../app.const";
 import {PlayerSocket} from "../socket/socket.gateway";
-import {Db} from "mongodb";
-import {Logger} from "@nestjs/common";
+import {Injectable, Logger} from "@nestjs/common";
+import {DatabaseService} from "./database.service";
 
+@Injectable()
 export class RoomService {
-
-
     private readonly logger: Logger = new Logger(RoomService.name);
 
-    db: Db;
-
-    constructor(db: Db) {
-        this.db = db;
+    constructor(private db: DatabaseService) {
     }
 
     public async create(socket: PlayerSocket, playerName: string): Promise<Room> {
@@ -25,7 +21,7 @@ export class RoomService {
         socket.join(room.code);
         socket.roomCode = room.code;
 
-        await this.db.collection('rooms').insertOne(room);
+        await this.db.db.collection('rooms').insertOne(room);
         this.logger.log('Player:' + playerName + ' created room:' + room.code);
         return room;
     }
@@ -93,7 +89,7 @@ export class RoomService {
     }
 
     public async findRoom(code: string): Promise<Room | undefined> {
-        const room = await this.db.collection('rooms').findOne({code: code});
+        const room = await this.db.db.collection('rooms').findOne({code: code});
         if (room) {
             return {
                 code: room.code,
@@ -131,12 +127,12 @@ export class RoomService {
     }
 
     private async updateRoom(room: Room): Promise<void> {
-        await this.db.collection('rooms').updateOne({code: room.code}, {$set: room});
+        await this.db.db.collection('rooms').updateOne({code: room.code}, {$set: room});
         this.logger.log('Room:' + room.code + ' updated')
     }
 
     private async deleteRoom(code: string): Promise<void> {
-        await this.db.collection('rooms').deleteOne({code: code});
+        await this.db.db.collection('rooms').deleteOne({code: code});
         this.logger.log('Room:' + code + ' deleted')
     }
 

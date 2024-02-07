@@ -1,9 +1,6 @@
 import {Injectable, Logger} from '@nestjs/common';
 import {Server} from 'socket.io';
-import {MongoClient} from 'mongodb';
-import {ConfigService} from "@nestjs/config";
 import {PlayerStatus, Room} from "../model";
-import {getRandomNumber} from "../utils/shared.utils";
 import {PlayerSocket} from "./socket.gateway";
 import {EMIT_EVENT_GAME, EMIT_RECEIVE_CARD} from "../app.const";
 import {Card} from "../utils/card";
@@ -14,18 +11,12 @@ import {GameService} from "../database/game.service";
 
 @Injectable()
 export class SocketService {
-    constructor(private configService: ConfigService) {
-    }
 
     private readonly logger: Logger = new Logger(SocketService.name);
 
-    private dbUrl: string = this.configService.get<string>('database.url')!;
-    private dbName: string = this.configService.get<string>('database.name')!;
+    constructor(private roomService: RoomService, private gameService: GameService) {
+    }
 
-    private db = new MongoClient(this.dbUrl).db(this.dbName);
-
-    private roomService = new RoomService(this.db);
-    private gameService = new GameService(this.db);
 
     public async createRoom(socket: PlayerSocket, playerName: string): Promise<Room> {
         return await this.roomService.create(socket, playerName);
@@ -56,13 +47,11 @@ export class SocketService {
                 await this.gameService.create(room, deck);
 
                 for (const player of room.players) {
-                    const card1 = await this.getACardFromDeck(room.code);
-                    const card2 = await this.getACardFromDeck(room.code);
+                    const card1 = await this.gameService.getACardFromDeck(room.code);
+                    const card2 = await this.gameService.getACardFromDeck(room.code);
                     server.to(player.socketId).emit(EMIT_RECEIVE_CARD, card1);
                     server.to(player.socketId).emit(EMIT_RECEIVE_CARD, card2);
                 }
-
-
             }
         } catch (error) {
             throw error;
@@ -77,19 +66,5 @@ export class SocketService {
             });
         });
         return allCards;
-    }
-
-
-    private async getACardFromDeck(roomId: string): Promise<Card> {
-        const gamedb = await this.db.collection('game').findOne({code: roomId});
-
-        //TODO: retirer la carte du deck
-        if (gamedb) {
-            const length = gamedb.deck.length;
-            const random = getRandomNumber(0, length);
-            return gamedb.deck[random];
-        } else {
-            throw new Error('Game not found');
-        }
     }
 }
