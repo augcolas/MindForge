@@ -1,18 +1,31 @@
-import {Image, StyleSheet, View} from 'react-native';
-import React, {useEffect, useState} from "react";
+import { Platform, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import * as ScreenOrientation from "expo-screen-orientation";
-import {LinearGradient} from "expo-linear-gradient";
+import { LinearGradient } from "expo-linear-gradient";
+import { useWebSocket } from "../context/socket.context";
+import { Card } from "../models/card";
+import { CardImage } from "../components/Card";
+
 
 export default function Game() {
     const [orientation, setOrientation] = useState(1);
-    const [cards, setCards] = useState([]);
-    const [tokens, setTokens] = useState([]);
-
+    const {socket} = useWebSocket();
+    const [cards, setCards] = useState<Card[]>([]);
 
     useEffect(() => {
-        lockOrientation();
+        socket.on("receive-card", (received:Card[]) => {
+            console.log(received)
+            setCards(received);
+        });
     }, []);
+
+    useEffect(() => {
+        lockOrientation().then(r => {});
+    }, []);
+
     const lockOrientation = async () => {
+        //if device is not computer
+        if (Platform.OS === "web") return;
         await ScreenOrientation.lockAsync(
             ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
         );
@@ -24,6 +37,11 @@ export default function Game() {
     return (
         <LinearGradient colors={["rgba(27,109,22,1)", "rgba(23,52,18,1)"]} style={styles.background}>
             <View style={styles.container}>
+                <View style={styles.cards}>
+                    {cards.map((card, index) => (
+                        <CardImage key={index} card={card} style={styles.card} />
+                    ))}
+                </View>
             </View>
         </LinearGradient>
     );
