@@ -16,13 +16,17 @@ export default function Home({ navigation }: any) {
 
   const onCreateRoom = () => {
     createRoom(playerName).then((room) => {
-      navigation.navigate("WaitingRoom");
+      navigation.navigate("WaitingRoom",{
+        playerName: playerName
+      });
     });
   };
 
   const onJoinRoom = () => {
     joinRoom(roomId, playerName).then(() => {
-      navigation.navigate("WaitingRoom");
+      navigation.navigate("WaitingRoom",{
+        playerName: playerName
+      });
     });
   };
 

@@ -12,5 +12,17 @@ export const commonStyles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     textAlign: 'center',
-  }
+  },
+  secondaryButton: {
+    backgroundColor: '#6C757D',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    width: '100%',
+  },
+  secondaryButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    textAlign: 'center',
+  },
 });

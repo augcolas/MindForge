@@ -51,6 +51,31 @@ export class SocketService {
         return room;
     }
 
+    public async leaveRoom(socket: PlayerSocket): Promise<void> {
+        const room = await this.findRoom(socket.roomCode);
+        if(room) {
+            const index = room.players.findIndex(player => player.socketId === socket.id);
+            const name = room.players[index].name;
+            if(index !== -1) {
+                room.players.splice(index, 1);
+                await this.updateRoom(room);
+                socket.leave(room.code);
+
+                console.log('Player:' + name + ' left room:' + room.code)
+
+                if(room.players.length === 0) {
+                    await this.deleteRoom(room.code);
+                    return
+                }
+                else if(room.players[index].socketId === room.owned.socketId) {
+                    room.owned = room.players[0];
+                    await this.updateRoom(room);
+                    return
+                }
+            }
+        }
+    }
+
     public async startGame(socket: PlayerSocket, server: Server): Promise<void> {
         try {
             await this.canStartGame(socket);
@@ -125,5 +150,11 @@ export class SocketService {
 
     private async updateRoom(room: Room): Promise<void> {
         await this.db.collection('rooms').updateOne({code: room.code}, {$set: room});
+        console.log('Room:' + room.code + ' updated')
+    }
+
+    private async deleteRoom(code: string): Promise<void> {
+        await this.db.collection('rooms').deleteOne({code: code});
+        console.log('Room:' + code + ' deleted')
     }
 }

@@ -7,9 +7,10 @@ import { commonStyles } from '../styles/CommonStyles';
 import logo from '../assets/Logo.png';
 import React from "react";
 
-export default function WaitingRoom({ navigation }: any) {
+export default function WaitingRoom({ route, navigation }: any) {
     const { getRoom, socket } = useWebSocket();
     const [room, setRoom] = useState(getRoom());
+    const [myself, setMyself] = useState(route.params.playerName);
 
     useEffect(() => {
         socket.on("room-status", (data) => {
@@ -28,6 +29,11 @@ export default function WaitingRoom({ navigation }: any) {
 
     const onStartGame = () => {
         socket.emit("start-game");
+    }
+
+    const onQuitRoom = () => {
+        socket.emit("leave-room");
+        navigation.navigate("Home");
     }
 
     return (
@@ -54,14 +60,21 @@ export default function WaitingRoom({ navigation }: any) {
                 </View>
 
                 <View style={waitingRoomStyles.rightContainer}>
-                    <TouchableOpacity
-                        onPress={() => onStartGame()}
+                    {room.owned.name === myself &&
+                      <TouchableOpacity
+                        onPress={onStartGame}
                         style={commonStyles.primaryButton}
-                    >
-                        <Text style={commonStyles.primaryButtonText}>Start game</Text>
-                    </TouchableOpacity>
+                      >
+                          <Text style={commonStyles.primaryButtonText}>Start game</Text>
+                      </TouchableOpacity>
+                    }
                     <View style={waitingRoomStyles.spacesButton}></View>
-                    <Button title={"Quit room"} color='black'></Button>
+                    <TouchableOpacity
+                        onPress={onQuitRoom}
+                        style={commonStyles.secondaryButton}
+                    >
+                        <Text style={commonStyles.secondaryButtonText}>Leave room</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </LinearGradient>
