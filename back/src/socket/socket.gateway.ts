@@ -73,7 +73,7 @@ export class SocketGateway implements OnGatewayConnection {
         try {
             await this.socketService.leaveRoom(client);
         } catch (error) {
-            console.log(error.message);
+            this.logger.error(error.message);
         }
     }
 
@@ -82,7 +82,7 @@ export class SocketGateway implements OnGatewayConnection {
         try {
             await this.socketService.startGame(client,this.server);
         }catch (error) {
-            console.log(error);
+            this.logger.error(error);
         }
     }
 

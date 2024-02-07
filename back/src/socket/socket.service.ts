@@ -5,7 +5,7 @@ import {ConfigService} from "@nestjs/config";
 import {PlayerStatus, Room} from "../model";
 import {getRandomNumber} from "../utils/shared.utils";
 import {PlayerSocket} from "./socket.gateway";
-import {EMIT_RECEIVE_CARD} from "../app.const";
+import {EMIT_EVENT_GAME, EMIT_RECEIVE_CARD} from "../app.const";
 import {Card} from "../utils/card";
 import {Color, Value} from "../app.enum";
 
@@ -38,6 +38,7 @@ export class SocketService {
     public async leaveRoom(socket: PlayerSocket): Promise<void> {
         return await this.roomService.leave(socket);
     }
+
     public async roomStatus(socket: PlayerSocket): Promise<PlayerStatus> {
         return await this.roomService.status(socket);
     }
@@ -48,6 +49,9 @@ export class SocketService {
             await this.roomService.canStartGame(socket);
             const room = await this.roomService.findRoom(socket.roomCode);
             if (room) {
+                this.logger.log('Room ' + room.code + ' started');
+                server.to(room.code).emit(EMIT_EVENT_GAME);
+
                 const deck = this.create52cards();
                 await this.gameService.create(room, deck);
 
@@ -58,8 +62,7 @@ export class SocketService {
                     server.to(player.socketId).emit(EMIT_RECEIVE_CARD, card2);
                 }
 
-                this.logger.log('Start game');
-                server.to(room.code).emit('game-started');
+
             }
         } catch (error) {
             throw error;
