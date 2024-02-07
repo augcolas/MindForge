@@ -1,4 +1,5 @@
-export const EMIT_EVENT_GAME = "game-started";
+export const EMIT_EVENT_GAME_STATUS = "game-status";
+export const EMIT_EVENT_GAME_STARTED = "game-started";
 export const EMIT_ROOM_STATUS = "room-status";
 export const EMIT_RECEIVE_CARD = "receive-card";
 export const LISTENER_EVENT_START_GAME = "start-game";
