@@ -4,7 +4,7 @@
 
 ### Jeu de Poker en Ligne
 
-- Fonctionnalités de création/rejoignement de rooms avec un code de connexion via Websockets.
+- Fonctionnalités de création/rejoindre de rooms via Websockets.
 - Implémentation des règles du jeu côté serveur, incluant les coups autorisés et les actions des joueurs.
 - Stockage des 54 cartes du jeu côté serveur, avec récupération et affichage côté client.
 
