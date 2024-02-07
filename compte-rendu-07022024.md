@@ -4,7 +4,6 @@
 
 ### Jeu de Poker en Ligne
 
-- Mise en place d'un jeu de poker en ligne.
 - Fonctionnalités de création/rejoignement de rooms avec un code de connexion via Websockets.
 - Implémentation des règles du jeu côté serveur, incluant les coups autorisés et les actions des joueurs.
 - Stockage des 54 cartes du jeu côté serveur, avec récupération et affichage côté client.
