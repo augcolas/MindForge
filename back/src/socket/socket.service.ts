@@ -57,6 +57,7 @@ export class SocketService {
             const room = await this.findRoom(socket.roomCode);
             if(room) {
                 console.log('Starting game');
+                server.to(room.code).emit('game-started');
             }
         }catch (error) {
             throw error;

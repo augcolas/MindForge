@@ -15,6 +15,9 @@ export default function WaitingRoom({ navigation }: any) {
         socket.on("room-status", (data) => {
             setRoom(data);
         });
+        socket.on("game-started", () => {
+            navigation.navigate("Game");
+        });
     }, []);
 
     const renderPlayer = (player: any) => (
@@ -24,7 +27,6 @@ export default function WaitingRoom({ navigation }: any) {
     );
 
     const onStartGame = () => {
-        navigation.navigate("Game");
         socket.emit("start-game");
     }
 
