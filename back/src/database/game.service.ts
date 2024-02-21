@@ -6,12 +6,7 @@ import {getRandomNumber} from "../utils/shared.utils";
 
 @Injectable()
 export class GameService {
-
-    private readonly logger: Logger = new Logger(GameService.name);
-
-
-    constructor(private db: DatabaseService) {
-    }
+    constructor(private db: DatabaseService) {}
 
 
     public async create(room: Room, deck: any): Promise<void> {

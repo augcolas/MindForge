@@ -1,6 +1,6 @@
 import {Injectable, Logger} from '@nestjs/common';
 import {Server} from 'socket.io';
-import {PlayerStatus, Room} from "../model";
+import {PlayerStatus, Room, SendCardEnum} from "../model";
 import {PlayerSocket} from "./socket.gateway";
 import {EMIT_EVENT_GAME_STARTED, EMIT_RECEIVE_CARD} from "../app.const";
 import {Card} from "../utils/card";
@@ -50,10 +50,22 @@ export class SocketService {
                 for (const player of room.players) {
                     const card1 = await this.gameService.getACardFromDeck(room.code);
                     const card2 = await this.gameService.getACardFromDeck(room.code);
-                    server.to(player.socketId).emit(EMIT_RECEIVE_CARD, [card1,card2]);
+                    server.to(player.socketId).emit(EMIT_RECEIVE_CARD, {
+                        ev: SendCardEnum.OWN_CARDS,
+                        cards: [card1, card2]
+                    });
                 }
+                const flop1 = await this.gameService.getACardFromDeck(room.code);
+                const flop2 = await this.gameService.getACardFromDeck(room.code);
+                const flop3 = await this.gameService.getACardFromDeck(room.code);
 
                 // Distribute cards to the main hand
+                server.to(room.code).emit(EMIT_RECEIVE_CARD, {
+                    ev: SendCardEnum.OWN_CARDS,
+                    cards: [flop1, flop2, flop3]
+                });
+
+
             }
         } catch (error) {
             throw error;

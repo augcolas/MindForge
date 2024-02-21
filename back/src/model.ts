@@ -22,3 +22,10 @@ export interface Player {
     name: string;
     socketId: string;
 }
+
+export enum SendCardEnum {
+    OWN_CARDS="OWN_CARDS",
+    FLOP="FLOP",
+    TURN="TURN",
+    RIVER="RIVER"
+}
