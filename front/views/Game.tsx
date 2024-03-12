@@ -10,12 +10,13 @@ import { CardImage } from "../components/Card";
 export default function Game() {
     const [orientation, setOrientation] = useState(1);
     const {socket} = useWebSocket();
-    const [cards, setCards] = useState<Card[]>([]);
+    const [hand, setHand] = useState<Card[]>([]);
+    const [players, setPlayers] = useState<any[]>([]);
 
     useEffect(() => {
         socket.on("receive-card", (received:Card[]) => {
             console.log(received)
-            setCards(received);
+            setHand(received);
         });
     }, []);
 
@@ -37,10 +38,25 @@ export default function Game() {
     return (
         <LinearGradient colors={["rgba(27,109,22,1)", "rgba(23,52,18,1)"]} style={styles.background}>
             <View style={styles.container}>
-                <View style={styles.cards}>
-                    {cards.map((card, index) => (
+                <View style={styles.ownCard}>
+                    {hand.map((card, index) => (
                         <CardImage key={index} card={card} style={styles.card} />
                     ))}
+                </View>
+
+                <View style={styles.enemyCard1}>
+                    <CardImage card={"back"} style={styles.card} />
+                    <CardImage card={"back"} style={styles.card} />
+                </View>
+
+                <View style={styles.enemyCard2}>
+                    <CardImage card={"back"} style={styles.card} />
+                    <CardImage card={"back"} style={styles.card} />
+                </View>
+
+                <View style={styles.enemyCard3}>
+                    <CardImage card={"back"} style={styles.card} />
+                    <CardImage card={"back"} style={styles.card} />
                 </View>
             </View>
         </LinearGradient>
@@ -83,13 +99,13 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         margin: 'auto',
-        top: '85%'
+        top: '80%'
     },
     enemyCard1: {
         position: 'absolute',
         display: 'flex',
         flexDirection: 'row',
-        bottom: '85%',
+        bottom: '80%',
         margin: 'auto',
     },
     enemyCard2: {
@@ -98,7 +114,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         transform: [{rotateZ: '90deg'}],
         margin: 'auto',
-        right: '90%',
+        right: '80%',
     },
     enemyCard3: {
         position: 'absolute',
@@ -106,7 +122,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         transform: [{rotateZ: '90deg'}],
         margin: 'auto',
-        left: '90%',
+        left: '80%',
     },
     tokens: {
         position: "absolute",

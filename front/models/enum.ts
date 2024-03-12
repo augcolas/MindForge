@@ -1,4 +1,5 @@
 export enum Value {
+    Back = 0,
     Two = 2,
     Three = 3,
     Four = 4,
@@ -19,6 +20,7 @@ export enum Color {
     Diamonds = 'Diamonds',
     Clubs = 'Clubs',
     Spades = 'Spades',
+    Back = 'Back'
 }
 
 
