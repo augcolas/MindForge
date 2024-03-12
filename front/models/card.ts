@@ -3,7 +3,7 @@ export class Card {
     private _value: Value;
     private _color: Color;
 
-    constructor(value: Value, color: Color) {
+    constructor(value:Value, color:Color) {
         this._value = value;
         this._color = color;
     }
@@ -67,6 +67,9 @@ export class Card {
             case Value.Ace:
                 result=("A-");
                 break;
+            case Value.Back:
+                result=("Back-");
+                break;
         }
 
         switch (this._color) {
@@ -81,6 +84,9 @@ export class Card {
                 break;
             case Color.Spades:
                 result+=("S");
+                break;
+            case Color.Back:
+                result+=("Blue");
                 break;
         }
 
