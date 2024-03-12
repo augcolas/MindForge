@@ -17,7 +17,9 @@ export default function WaitingRoom({ route, navigation }: any) {
             setRoom(data);
         });
         socket.on("game-started", () => {
-            navigation.navigate("Game");
+            navigation.navigate("Game",{
+                playerName: myself
+            });
         });
     }, []);
 

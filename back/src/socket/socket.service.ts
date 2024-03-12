@@ -2,7 +2,11 @@ import {Injectable, Logger} from '@nestjs/common';
 import {Server} from 'socket.io';
 import {PlayerStatus, Room, SendCardEnum} from "../model";
 import {PlayerSocket} from "./socket.gateway";
-import {EMIT_EVENT_GAME_STARTED, EMIT_RECEIVE_CARD} from "../app.const";
+import {
+    EMIT_EVENT_GAME_STARTED,
+    EMIT_EVENT_GAME_STATUS,
+    EMIT_RECEIVE_CARD
+} from "../app.const";
 import {Card} from "../utils/card";
 import {Color, Value} from "../app.enum";
 
@@ -61,9 +65,15 @@ export class SocketService {
 
                 // Distribute cards to the main hand
                 server.to(room.code).emit(EMIT_RECEIVE_CARD, {
-                    ev: SendCardEnum.OWN_CARDS,
+                    ev: SendCardEnum.FLOP,
                     cards: [flop1, flop2, flop3]
                 });
+
+                // Emit the first player
+                server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
+                    playing: room.players[0]
+                });
+
 
 
             }

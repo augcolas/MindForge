@@ -7,18 +7,38 @@ import { Card } from "../models/card";
 import { CardImage } from "../components/Card";
 
 
-export default function Game() {
+export default function Game({route}:any) {
     const [orientation, setOrientation] = useState(1);
     const {socket} = useWebSocket();
+    const [myself, setMyself] = useState(route.params.playerName);
     const [hand, setHand] = useState<Card[]>([]);
+    const [flop, setFlop] = useState<Card[]>([]);
     const [players, setPlayers] = useState<any[]>([]);
+    const [playing, setPlaying] = useState<string>("");
 
     useEffect(() => {
-        socket.on("receive-card", (received:Card[]) => {
-            console.log(received)
-            setHand(received);
+        socket.on("receive-card", (received:any) => {
+            console.log("received: ",received)
+
+            switch (received.ev) {
+                case "FLOP":
+                    setFlop(received.cards);
+                    break;
+                case "OWN_CARDS":
+                    setHand(received.cards);
+                    break;
+                default:
+                    break;
+            }
+
+        });
+
+        socket.on("game-status", (received: any) => {
+            console.log("game-status: ", received);
+            setPlaying(received.playing.name);
         });
     }, []);
+
 
     useEffect(() => {
         lockOrientation().then(r => {});
@@ -38,6 +58,13 @@ export default function Game() {
     return (
         <LinearGradient colors={["rgba(27,109,22,1)", "rgba(23,52,18,1)"]} style={styles.background}>
             <View style={styles.container}>
+
+                <View style={styles.cards}>
+                    {flop.map((card, index) => (
+                        <CardImage key={index} card={card} style={styles.card} />
+                    ))}
+                </View>
+
                 <View style={styles.ownCard}>
                     {hand.map((card, index) => (
                         <CardImage key={index} card={card} style={styles.card} />
@@ -57,6 +84,10 @@ export default function Game() {
                 <View style={styles.enemyCard3}>
                     <CardImage card={"back"} style={styles.card} />
                     <CardImage card={"back"} style={styles.card} />
+                </View>
+
+                <View>
+                    <Text style={styles.info}>{playing === myself ? "Your turn" : "Waiting" }</Text>
                 </View>
             </View>
         </LinearGradient>
@@ -134,5 +165,13 @@ const styles = StyleSheet.create({
     token: {
         width: 50,
         height: 50
+    },
+    info: {
+        display: 'flex',
+        bottom: 180,
+        color: "white",
+        backgroundColor: "rgba(0,0,0,0.5)",
+        borderRadius: 5,
+        padding: 10,
     }
 });
