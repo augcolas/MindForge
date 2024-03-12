@@ -5,7 +5,7 @@ import {PlayerSocket} from "./socket.gateway";
 import {
     EMIT_EVENT_GAME_STARTED,
     EMIT_EVENT_GAME_STATUS,
-    EMIT_RECEIVE_CARD
+    EMIT_RECEIVE_CARD, LISTENER_EVENT_PLAYER_ACTION
 } from "../app.const";
 import {Card} from "../utils/card";
 import {Color, Value} from "../app.enum";
@@ -72,6 +72,35 @@ export class SocketService {
                 // Emit the first player
                 server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
                     playing: room.players[0]
+                });
+
+                socket.on(LISTENER_EVENT_PLAYER_ACTION, async (data: any) => {
+                    console.log("player-action", data);
+
+                    const player = room.players.find(p => p.name === data.player);
+
+                    if (player) {
+                        const index = room.players.indexOf(player);
+                        const nextPlayer = room.players[index + 1];
+
+                        if (nextPlayer) {
+                            server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
+                                playing: nextPlayer
+                            });
+                        } else {
+                            server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
+                                playing: ""
+                            });
+
+                            const turn = await this.gameService.getACardFromDeck(room.code);
+                            server.to(room.code).emit(EMIT_RECEIVE_CARD, {
+                                ev: SendCardEnum.TURN,
+                                cards: [turn]
+                            });
+
+                        }
+                    }
+
                 });
 
 

@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { Button, Platform, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { LinearGradient } from "expo-linear-gradient";
@@ -12,9 +12,9 @@ export default function Game({route}:any) {
     const {socket} = useWebSocket();
     const [myself, setMyself] = useState(route.params.playerName);
     const [hand, setHand] = useState<Card[]>([]);
-    const [flop, setFlop] = useState<Card[]>([]);
+    const [river, setRiver] = useState<Card[]>([]);
     const [players, setPlayers] = useState<any[]>([]);
-    const [playing, setPlaying] = useState<string>("");
+    const [playing, setPlaying] = useState<boolean>(false);
 
     useEffect(() => {
         socket.on("receive-card", (received:any) => {
@@ -22,7 +22,10 @@ export default function Game({route}:any) {
 
             switch (received.ev) {
                 case "FLOP":
-                    setFlop(received.cards);
+                    setRiver(received.cards);
+                    break;
+                case "TURN":
+                    setRiver([...received.cards]);
                     break;
                 case "OWN_CARDS":
                     setHand(received.cards);
@@ -35,7 +38,12 @@ export default function Game({route}:any) {
 
         socket.on("game-status", (received: any) => {
             console.log("game-status: ", received);
-            setPlaying(received.playing.name);
+
+            if(received.playing){
+                setPlaying(received.playing.name === myself);
+            }
+
+
         });
     }, []);
 
@@ -54,13 +62,27 @@ export default function Game({route}:any) {
         setOrientation(o);
     };
 
+    const Bet = () => {
+        socket.emit("player-action", {
+            player: myself,
+            action: "bet",
+            amount: 10
+        })
+    }
+
+    const Fold = () => {
+        socket.emit("player-action", {
+            player: myself,
+            action: "fold",
+        })
+    }
 
     return (
         <LinearGradient colors={["rgba(27,109,22,1)", "rgba(23,52,18,1)"]} style={styles.background}>
             <View style={styles.container}>
 
                 <View style={styles.cards}>
-                    {flop.map((card, index) => (
+                    {river.map((card, index) => (
                         <CardImage key={index} card={card} style={styles.card} />
                     ))}
                 </View>
@@ -86,8 +108,18 @@ export default function Game({route}:any) {
                     <CardImage card={"back"} style={styles.card} />
                 </View>
 
-                <View>
-                    <Text style={styles.info}>{playing === myself ? "Your turn" : "Waiting" }</Text>
+                <View style={styles.info}>
+                    <Text style={{color:"white"}}>{playing ? "Your turn" : "Waiting" }</Text>
+                    {playing && (
+                      <View style={styles.info_row}>
+                          <Button title={"Bet"} style={styles.action_button}
+                            onPress={Bet}
+                          ></Button>
+                          <Button title={"Fold"} style={styles.action_button}
+                            onPress={Fold}
+                          ></Button>
+                      </View>
+                    )}
                 </View>
             </View>
         </LinearGradient>
@@ -168,10 +200,18 @@ const styles = StyleSheet.create({
     },
     info: {
         display: 'flex',
-        bottom: 180,
+        flexDirection: 'column',
+        bottom: 250,
         color: "white",
         backgroundColor: "rgba(0,0,0,0.5)",
         borderRadius: 5,
         padding: 10,
+    },
+    info_row:{
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    action_button: {
+        margin: 10
     }
 });
