@@ -20,11 +20,21 @@ export class GameService {
     public async getACardFromDeck(gameId: string): Promise<Card> {
         const game = await this.db.db.collection('game').findOne({code: gameId});
 
-        //TODO: retirer la carte du deck
         if (game) {
             const length = game.deck.length;
             const random = getRandomNumber(0, length);
-            return game.deck[random];
+
+            const card = game.deck[random];
+
+            game.deck.splice(random, 1);
+
+            await this.db.db.collection('game').updateOne({code: gameId}, {
+                $set: {
+                    deck: game.deck
+                }
+            });
+
+            return card;
         } else {
             throw new Error('Game not found');
         }
