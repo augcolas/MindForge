@@ -4,6 +4,7 @@ import configuration from '../config/configuration';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SocketModule } from './socket/socket.module';
+import { GptModule } from './gpt/gpt.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { SocketModule } from './socket/socket.module';
       isGlobal: true,
       load: [configuration],
     }),
-    SocketModule
+    SocketModule,
+    GptModule
   ],
   controllers: [AppController],
   providers: [AppService],

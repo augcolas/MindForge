@@ -1,3 +1,5 @@
 database:
   name: MindForge
   url : mongodb://root:password@localhost:27017
+openai:
+  key: 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
