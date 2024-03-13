@@ -47,7 +47,7 @@ export class SocketGateway implements OnGatewayConnection {
             return await this.socketService.createRoom(client, playerName);
         }
         catch (error) {
-            this.logger.error(error.message);
+            this.logger.error(error);
         }
     }
 
@@ -63,7 +63,7 @@ export class SocketGateway implements OnGatewayConnection {
 
             return room;
         } catch (error) {
-            this.logger.error(error.message);
+            this.logger.error(error);
         }
 
     }
@@ -73,7 +73,7 @@ export class SocketGateway implements OnGatewayConnection {
         try {
             await this.socketService.leaveRoom(client);
         } catch (error) {
-            this.logger.error(error.message);
+            this.logger.error(error);
         }
     }
 

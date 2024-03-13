@@ -1,13 +1,14 @@
-import { Button, Platform, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import {Button, Platform, StyleSheet, Text, View} from "react-native";
+import React, {useEffect, useState} from "react";
 import * as ScreenOrientation from "expo-screen-orientation";
-import { LinearGradient } from "expo-linear-gradient";
-import { useWebSocket } from "../context/socket.context";
-import { Card } from "../models/card";
-import { CardImage } from "../components/Card";
+import {LinearGradient} from "expo-linear-gradient";
+import {useWebSocket} from "../context/socket.context";
+import {Card} from "../models/card";
+import {CardImage} from "../components/Card";
+import Slider from "@react-native-community/slider";
 
 
-export default function Game({route}:any) {
+export default function Game({route}: any) {
     const [orientation, setOrientation] = useState(1);
     const {socket} = useWebSocket();
     const [myself, setMyself] = useState(route.params.playerName);
@@ -16,14 +17,17 @@ export default function Game({route}:any) {
     const [turn, setTurn] = useState<Card[]>([]);
     const [river, setRiver] = useState<Card[]>([]);
     const [players, setPlayers] = useState<any[]>([]);
-    const [enemyPLayers, setEnemyPlayers] = useState<any[]>([]);
+    const [enemyPlayers, setEnemyPlayers] = useState<any[]>([]);
     const [playing, setPlaying] = useState<boolean>(false);
+    const [money, setMoney] = useState<number>(0);
+    const [betValue, setBetValue] = useState<number>(10);
 
     useEffect(() => {
-        lockOrientation().then(r => {});
+        lockOrientation().then(r => {
+        });
 
-        socket.on("receive-card", (received:any) => {
-            console.log("received: ",received)
+        socket.on("receive-card", (received: any) => {
+            console.log("received: ", received)
 
             switch (received.ev) {
                 case "FLOP":
@@ -50,17 +54,17 @@ export default function Game({route}:any) {
         socket.on("game-status", (received: any) => {
             console.log("game-status: ", received);
 
-            if(received.playing){
+            if (received.playing) {
                 console.log("set received.playing.name: ", received.playing.name)
                 setPlaying(received.playing.name === myself);
             }
 
-            if(received.players){
+            if (received.players) {
                 console.log("set received.players: ", received.players)
                 setPlayers(received.players);
-                setEnemyPlayers(received.players.filter((p:any) => p.name !== myself));
+                setEnemyPlayers(received.players.filter((p: any) => p.name !== myself));
+                setMoney(received.players.find((p: any) => p.name === myself).money);
             }
-
         });
     }, []);
 
@@ -75,12 +79,12 @@ export default function Game({route}:any) {
     };
 
     const Bet = () => {
-        console.log("bet");
         socket.emit("player-action", {
             player: myself,
             action: "bet",
-            amount: 10
-        })
+            amount: betValue
+        });
+        setBetValue(10);
     }
 
     const Fold = () => {
@@ -91,9 +95,8 @@ export default function Game({route}:any) {
         })
     }
 
-    const getCardStyle = (player : string) => {
-
-        const index = enemyPLayers.findIndex((p:any) => p.name === player);
+    const getCardStyle = (player: string) => {
+        const index = enemyPlayers.findIndex((p: any) => p.name === player);
         switch (index) {
             case 0:
                 return styles.enemyCard1
@@ -104,49 +107,76 @@ export default function Game({route}:any) {
             default:
                 return styles.ownCard
         }
-
     }
+
+    const onBetValueChange = (value: number) => {
+        setBetValue(value);
+    }
+
 
     return (
         <LinearGradient colors={["rgba(27,109,22,1)", "rgba(23,52,18,1)"]} style={styles.background}>
+            <Text style={styles.ownMoney}>{money}</Text>
             <View style={styles.container}>
-
                 <View style={styles.cards}>
                     {flop.map((card, index) => (
-                        <CardImage key={index} card={card} style={styles.card} />
+                        <CardImage key={index} card={card} style={styles.card}/>
                     ))}
                     {turn.map((card, index) => (
-                        <CardImage key={index} card={card} style={styles.card} />
+                        <CardImage key={index} card={card} style={styles.card}/>
                     ))}
                     {river.map((card, index) => (
-                        <CardImage key={index} card={card} style={styles.card} />
+                        <CardImage key={index} card={card} style={styles.card}/>
                     ))}
                 </View>
 
                 <View style={styles.ownCard}>
                     {hand.map((card, index) => (
-                      <CardImage key={index} card={card} style={styles.card} />
+                        <CardImage key={index} card={card} style={styles.card}/>
                     ))}
                 </View>
 
-                {enemyPLayers.map((player, index) => (
-                  <View key={index} style={getCardStyle(player.name)}>
-                      <CardImage card={"back"} style={styles.card} />
-                      <CardImage card={"back"} style={styles.card} />
-                  </View>
+                {enemyPlayers.map((player, index) => (
+                    <View key={index} style={getCardStyle(player.name)}>
+                        <Text>{player.name}</Text>
+                        <Text>{player.money}</Text>
+                        <Text>CurrentBet: {player.currentBet}</Text>
+                        <CardImage card={"back"} style={styles.card}/>
+                        <CardImage card={"back"} style={styles.card}/>
+                    </View>
                 ))}
 
                 <View style={styles.info}>
-                    <Text style={{color:"white"}}>{playing ? "Your turn" : "Waiting" }</Text>
+                    <Text style={{color: "white"}}>{playing ? "Your turn" : "Waiting"}</Text>
                     {playing && (
-                      <View style={styles.info_row}>
-                          <Button title={"Bet"} style={styles.action_button}
-                            onPress={Bet}
-                          ></Button>
-                          <Button title={"Fold"} style={styles.action_button}
-                            onPress={Fold}
-                          ></Button>
-                      </View>
+                        <View>
+                            <View style={styles.info_bet_slider}>
+                                <Text style={styles.info_betValue}>{betValue}</Text>
+                                <Slider
+                                    style={{width: 200, height: 40}}
+                                    step={10}
+                                    minimumValue={10}
+                                    maximumValue={money}
+                                    minimumTrackTintColor="#FFFFFF"
+                                    maximumTrackTintColor="#000000"
+                                    onValueChange={onBetValueChange}
+                                />
+                            </View>
+                            <View style={[styles.info_row, styles.info_buttons]}>
+                                <View style={styles.action_button}>
+                                    <Button title={"Bet"}
+                                            onPress={Bet}
+                                    ></Button>
+                                </View>
+                                <View style={styles.action_button}>
+                                    <Button title={"Fold"}
+                                            onPress={Fold}
+                                    ></Button>
+                                </View>
+                            </View>
+
+                        </View>
+
                     )}
                 </View>
             </View>
@@ -192,6 +222,12 @@ const styles = StyleSheet.create({
         margin: 'auto',
         top: '80%'
     },
+    ownMoney: {
+        position: 'absolute',
+        top: '2%',
+        right: '2%',
+        color: 'white'
+    },
     enemyCard1: {
         position: 'absolute',
         display: 'flex',
@@ -235,11 +271,23 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
     },
-    info_row:{
+    info_row: {
         display: 'flex',
         flexDirection: 'row',
     },
+    info_buttons: {
+        display: 'flex',
+        gap: 5
+    },
     action_button: {
-        margin: 10
+        flex: 1
+    },
+    info_betValue: {
+        color: 'white'
+    },
+    info_bet_slider: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
     }
 });
