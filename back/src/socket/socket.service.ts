@@ -96,7 +96,6 @@ export class SocketService {
     }
 
     public async playerAction(socket: PlayerSocket,server: Server, data: any): Promise<void> {
-        console.log("socket", socket);
         const room = await this.roomService.findRoom(socket.roomCode);
         console.log("player-action", data);
 
@@ -113,6 +112,8 @@ export class SocketService {
                         playing: nextPlayer
                     });
                 } else {
+
+                    //everybody has played we can move to the next state
                     server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
                         playing: " "
                     });
@@ -134,12 +135,24 @@ export class SocketService {
                             });
                             this.state = "river";
                             break;
+                        case "river":
+                            //end of the game
+                            console.log("end of the game");
+                            this.state = "end";
+                            break;
                     }
 
                     // Emit the first player
-                    server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
-                        playing: room.players[0]
-                    });
+                    if(this.state !== "end"){
+                        server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
+                            playing: room.players[0]
+                        });
+                    }else{
+                        server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
+                            playing: " "
+                        });
+                    }
+
                 }
             }
         }
