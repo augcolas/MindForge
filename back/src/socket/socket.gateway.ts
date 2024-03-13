@@ -12,7 +12,7 @@ import {
     EMIT_ROOM_STATUS,
     LISTENER_EVENT_CREATE_ROOM,
     LISTENER_EVENT_JOIN_ROOM,
-    LISTENER_EVENT_LEAVE_ROOM,
+    LISTENER_EVENT_LEAVE_ROOM, LISTENER_EVENT_PLAYER_ACTION,
     LISTENER_EVENT_START_GAME,
     LISTENER_EVENT_STATUS
 } from "../app.const";
@@ -90,5 +90,15 @@ export class SocketGateway implements OnGatewayConnection {
     @SubscribeMessage(LISTENER_EVENT_STATUS)
     async handleStatus(client: PlayerSocket): Promise<PlayerStatus> {
         return await this.socketService.roomStatus(client);
+    }
+
+    @SubscribeMessage(LISTENER_EVENT_PLAYER_ACTION)
+    async handlePlayerAction(@ConnectedSocket() client: PlayerSocket, @MessageBody() data: any): Promise<void> {
+        try {
+            console.log('client',client);
+            await this.socketService.playerAction(client, this.server,data);
+        }catch (error) {
+            this.logger.error(error);
+        }
     }
 }

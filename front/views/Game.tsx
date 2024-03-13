@@ -12,20 +12,25 @@ export default function Game({route}:any) {
     const {socket} = useWebSocket();
     const [myself, setMyself] = useState(route.params.playerName);
     const [hand, setHand] = useState<Card[]>([]);
-    const [river, setRiver] = useState<Card[]>([]);
+    const [flop, setFlop] = useState<Card[]>([]);
+    const [turn, setTurn] = useState<Card[]>([]);
     const [players, setPlayers] = useState<any[]>([]);
     const [playing, setPlaying] = useState<boolean>(false);
 
     useEffect(() => {
+        lockOrientation().then(r => {});
+
         socket.on("receive-card", (received:any) => {
             console.log("received: ",received)
 
             switch (received.ev) {
                 case "FLOP":
-                    setRiver(received.cards);
+                    console.log("flop: ", received.cards)
+                    setFlop(received.cards);
                     break;
                 case "TURN":
-                    setRiver([...received.cards]);
+                    console.log("turn: ", received.cards)
+                    setTurn(received.cards);
                     break;
                 case "OWN_CARDS":
                     setHand(received.cards);
@@ -40,16 +45,12 @@ export default function Game({route}:any) {
             console.log("game-status: ", received);
 
             if(received.playing){
+                console.log("set received.playing.name: ", received.playing.name)
                 setPlaying(received.playing.name === myself);
             }
 
 
         });
-    }, []);
-
-
-    useEffect(() => {
-        lockOrientation().then(r => {});
     }, []);
 
     const lockOrientation = async () => {
@@ -63,6 +64,7 @@ export default function Game({route}:any) {
     };
 
     const Bet = () => {
+        console.log("bet");
         socket.emit("player-action", {
             player: myself,
             action: "bet",
@@ -71,6 +73,7 @@ export default function Game({route}:any) {
     }
 
     const Fold = () => {
+        console.log("fold");
         socket.emit("player-action", {
             player: myself,
             action: "fold",
@@ -82,7 +85,10 @@ export default function Game({route}:any) {
             <View style={styles.container}>
 
                 <View style={styles.cards}>
-                    {river.map((card, index) => (
+                    {flop.map((card, index) => (
+                        <CardImage key={index} card={card} style={styles.card} />
+                    ))}
+                    {turn.map((card, index) => (
                         <CardImage key={index} card={card} style={styles.card} />
                     ))}
                 </View>

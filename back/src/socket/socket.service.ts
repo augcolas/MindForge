@@ -73,38 +73,6 @@ export class SocketService {
                 server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
                     playing: room.players[0]
                 });
-
-                socket.on(LISTENER_EVENT_PLAYER_ACTION, async (data: any) => {
-                    console.log("player-action", data);
-
-                    const player = room.players.find(p => p.name === data.player);
-
-                    if (player) {
-                        const index = room.players.indexOf(player);
-                        const nextPlayer = room.players[index + 1];
-
-                        if (nextPlayer) {
-                            server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
-                                playing: nextPlayer
-                            });
-                        } else {
-                            server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
-                                playing: ""
-                            });
-
-                            const turn = await this.gameService.getACardFromDeck(room.code);
-                            server.to(room.code).emit(EMIT_RECEIVE_CARD, {
-                                ev: SendCardEnum.TURN,
-                                cards: [turn]
-                            });
-
-                        }
-                    }
-
-                });
-
-
-
             }
         } catch (error) {
             throw error;
@@ -119,5 +87,37 @@ export class SocketService {
             });
         });
         return allCards;
+    }
+
+    public async playerAction(socket: PlayerSocket,server: Server, data: any): Promise<void> {
+        console.log("socket", socket);
+        const room = await this.roomService.findRoom(socket.roomCode);
+        console.log("player-action", data);
+
+        if(room){
+            const player = room.players.find(p => p.name === data.player);
+
+            if (player) {
+                const index = room.players.indexOf(player);
+                const nextPlayer = room.players[index + 1];
+
+                if (nextPlayer) {
+                    server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
+                        playing: nextPlayer
+                    });
+                } else {
+                    server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
+                        playing: " "
+                    });
+
+                    const turn = await this.gameService.getACardFromDeck(room.code);
+
+                    server.to(room.code).emit(EMIT_RECEIVE_CARD, {
+                        ev: SendCardEnum.TURN,
+                        cards: [turn]
+                    });
+                }
+            }
+        }
     }
 }
