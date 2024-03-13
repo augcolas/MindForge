@@ -16,6 +16,8 @@ import {GameService} from "../database/game.service";
 @Injectable()
 export class SocketService {
 
+    protected state = "";
+
     private readonly logger: Logger = new Logger(SocketService.name);
 
     constructor(private roomService: RoomService, private gameService: GameService) {
@@ -69,10 +71,14 @@ export class SocketService {
                     cards: [flop1, flop2, flop3]
                 });
 
+                this.state = "flop";
+
                 // Emit the first player
                 server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
                     playing: room.players[0]
                 });
+
+
             }
         } catch (error) {
             throw error;
@@ -96,6 +102,7 @@ export class SocketService {
 
         if(room){
             const player = room.players.find(p => p.name === data.player);
+            const action = data.action;
 
             if (player) {
                 const index = room.players.indexOf(player);
@@ -110,11 +117,28 @@ export class SocketService {
                         playing: " "
                     });
 
-                    const turn = await this.gameService.getACardFromDeck(room.code);
+                    switch (this.state) {
+                        case "flop":
+                            const turn = await this.gameService.getACardFromDeck(room.code);
+                            server.to(room.code).emit(EMIT_RECEIVE_CARD, {
+                                ev: SendCardEnum.TURN,
+                                cards: [turn]
+                            });
+                            this.state = "turn";
+                            break;
+                        case "turn":
+                            const river = await this.gameService.getACardFromDeck(room.code);
+                            server.to(room.code).emit(EMIT_RECEIVE_CARD, {
+                                ev: SendCardEnum.RIVER,
+                                cards: [river]
+                            });
+                            this.state = "river";
+                            break;
+                    }
 
-                    server.to(room.code).emit(EMIT_RECEIVE_CARD, {
-                        ev: SendCardEnum.TURN,
-                        cards: [turn]
+                    // Emit the first player
+                    server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
+                        playing: room.players[0]
                     });
                 }
             }

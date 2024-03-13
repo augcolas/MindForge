@@ -14,6 +14,7 @@ export default function Game({route}:any) {
     const [hand, setHand] = useState<Card[]>([]);
     const [flop, setFlop] = useState<Card[]>([]);
     const [turn, setTurn] = useState<Card[]>([]);
+    const [river, setRiver] = useState<Card[]>([]);
     const [players, setPlayers] = useState<any[]>([]);
     const [playing, setPlaying] = useState<boolean>(false);
 
@@ -31,6 +32,10 @@ export default function Game({route}:any) {
                 case "TURN":
                     console.log("turn: ", received.cards)
                     setTurn(received.cards);
+                    break;
+                case "RIVER":
+                    console.log("river: ", received.cards)
+                    setRiver(received.cards);
                     break;
                 case "OWN_CARDS":
                     setHand(received.cards);
@@ -89,6 +94,9 @@ export default function Game({route}:any) {
                         <CardImage key={index} card={card} style={styles.card} />
                     ))}
                     {turn.map((card, index) => (
+                        <CardImage key={index} card={card} style={styles.card} />
+                    ))}
+                    {river.map((card, index) => (
                         <CardImage key={index} card={card} style={styles.card} />
                     ))}
                 </View>

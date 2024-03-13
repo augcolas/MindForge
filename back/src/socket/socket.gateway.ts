@@ -95,7 +95,6 @@ export class SocketGateway implements OnGatewayConnection {
     @SubscribeMessage(LISTENER_EVENT_PLAYER_ACTION)
     async handlePlayerAction(@ConnectedSocket() client: PlayerSocket, @MessageBody() data: any): Promise<void> {
         try {
-            console.log('client',client);
             await this.socketService.playerAction(client, this.server,data);
         }catch (error) {
             this.logger.error(error);
