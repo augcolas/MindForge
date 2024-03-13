@@ -16,6 +16,7 @@ export default function Game({route}:any) {
     const [turn, setTurn] = useState<Card[]>([]);
     const [river, setRiver] = useState<Card[]>([]);
     const [players, setPlayers] = useState<any[]>([]);
+    const [enemyPLayers, setEnemyPlayers] = useState<any[]>([]);
     const [playing, setPlaying] = useState<boolean>(false);
 
     useEffect(() => {
@@ -54,6 +55,11 @@ export default function Game({route}:any) {
                 setPlaying(received.playing.name === myself);
             }
 
+            if(received.players){
+                console.log("set received.players: ", received.players)
+                setPlayers(received.players);
+                setEnemyPlayers(received.players.filter((p:any) => p.name !== myself));
+            }
 
         });
     }, []);
@@ -85,6 +91,22 @@ export default function Game({route}:any) {
         })
     }
 
+    const getCardStyle = (player : string) => {
+
+        const index = enemyPLayers.findIndex((p:any) => p.name === player);
+        switch (index) {
+            case 0:
+                return styles.enemyCard1
+            case 1:
+                return styles.enemyCard2
+            case 2:
+                return styles.enemyCard3
+            default:
+                return styles.ownCard
+        }
+
+    }
+
     return (
         <LinearGradient colors={["rgba(27,109,22,1)", "rgba(23,52,18,1)"]} style={styles.background}>
             <View style={styles.container}>
@@ -103,24 +125,16 @@ export default function Game({route}:any) {
 
                 <View style={styles.ownCard}>
                     {hand.map((card, index) => (
-                        <CardImage key={index} card={card} style={styles.card} />
+                      <CardImage key={index} card={card} style={styles.card} />
                     ))}
                 </View>
 
-                <View style={styles.enemyCard1}>
-                    <CardImage card={"back"} style={styles.card} />
-                    <CardImage card={"back"} style={styles.card} />
-                </View>
-
-                <View style={styles.enemyCard2}>
-                    <CardImage card={"back"} style={styles.card} />
-                    <CardImage card={"back"} style={styles.card} />
-                </View>
-
-                <View style={styles.enemyCard3}>
-                    <CardImage card={"back"} style={styles.card} />
-                    <CardImage card={"back"} style={styles.card} />
-                </View>
+                {enemyPLayers.map((player, index) => (
+                  <View key={index} style={getCardStyle(player.name)}>
+                      <CardImage card={"back"} style={styles.card} />
+                      <CardImage card={"back"} style={styles.card} />
+                  </View>
+                ))}
 
                 <View style={styles.info}>
                     <Text style={{color:"white"}}>{playing ? "Your turn" : "Waiting" }</Text>

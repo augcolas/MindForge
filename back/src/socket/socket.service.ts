@@ -52,6 +52,11 @@ export class SocketService {
                 const deck = this.create52cards();
                 await this.gameService.create(room, deck);
 
+                // Send Game Status
+                server.to(room.code).emit(EMIT_EVENT_GAME_STATUS, {
+                    players: room.players
+                });
+
                 // Distribute cards to all players
                 for (const player of room.players) {
                     const card1 = await this.gameService.getACardFromDeck(room.code);
