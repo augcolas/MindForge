@@ -138,9 +138,10 @@ export default function Game({route}: any) {
 
                 {enemyPlayers.map((player, index) => (
                     <View key={index} style={getCardStyle(player.name)}>
-                        <Text>{player.name}</Text>
-                        <Text>{player.money}</Text>
-                        <Text>CurrentBet: {player.currentBet}</Text>
+                        <Text style={styles.playerName}>{player.name}</Text>
+                        {player.currentBet && (
+                          <Text style={styles.playerMoney}>{player.currentBet}</Text>
+                        )}
                         <CardImage card={"back"} style={styles.card}/>
                         <CardImage card={"back"} style={styles.card}/>
                     </View>
@@ -231,6 +232,7 @@ const styles = StyleSheet.create({
     enemyCard1: {
         position: 'absolute',
         display: 'flex',
+        justifyContent: 'center',
         flexDirection: 'row',
         bottom: '80%',
         margin: 'auto',
@@ -238,14 +240,16 @@ const styles = StyleSheet.create({
     enemyCard2: {
         position: 'absolute',
         display: 'flex',
+        justifyContent: 'center',
         flexDirection: 'row',
-        transform: [{rotateZ: '90deg'}],
+        transform: [{rotateZ: '-90deg'}],
         margin: 'auto',
         right: '80%',
     },
     enemyCard3: {
         position: 'absolute',
         display: 'flex',
+        justifyContent: 'center',
         flexDirection: 'row',
         transform: [{rotateZ: '90deg'}],
         margin: 'auto',
@@ -289,5 +293,31 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
+    },
+    playerName: {
+        position: 'absolute',
+        display: 'flex',
+        alignItems: "center",
+        justifyContent: "center",
+        top: -20,
+        width: 80,
+
+        backgroundColor: "rgba(0,0,0,0.5)",
+        color: "white",
+        textAlign: "center",
+        borderRadius: 5,
+    },
+    playerMoney: {
+        position: 'absolute',
+        display: 'flex',
+        alignItems: "center",
+        justifyContent: "center",
+        bottom: -20,
+        width: 80,
+
+        backgroundColor: "rgba(0,0,0,0.5)",
+        color: "white",
+        textAlign: "center",
+        borderRadius: 5,
     }
 });
