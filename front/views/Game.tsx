@@ -215,7 +215,6 @@ const own = StyleSheet.create({
         flexDirection: 'row',
     }
 });
-
 const enemy1 = StyleSheet.create({
     container: {
         position: 'absolute',
