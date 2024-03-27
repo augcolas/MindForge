@@ -99,14 +99,13 @@ export default function Game({route}: any) {
         const index = enemyPlayers.findIndex((p: any) => p.name === player);
         switch (index) {
             case 0:
-                return styles.enemyCard1
+                return enemy1;
             case 1:
-                return styles.enemyCard2
+                return enemy2;
             case 2:
-                return styles.enemyCard3
-            default:
-                return styles.ownCard
+                return enemy3;
         }
+        return enemy1;
     }
 
     const onBetValueChange = (value: number) => {
@@ -116,7 +115,7 @@ export default function Game({route}: any) {
 
     return (
         <LinearGradient colors={["rgba(27,109,22,1)", "rgba(23,52,18,1)"]} style={styles.background}>
-            <Text style={styles.ownMoney}>{money}</Text>
+
             <View style={styles.container}>
                 <View style={styles.cards}>
                     {flop.map((card, index) => (
@@ -130,32 +129,42 @@ export default function Game({route}: any) {
                     ))}
                 </View>
 
-                <View style={styles.ownCard}>
+                <View style={own.container}>
                     {myPlayer && (
-                      <>
-                          <Text style={styles.playerName}>{myPlayer.name}</Text>
-                          {myPlayer.currentBet && (
-                            <Text style={styles.playerMoney}>{myPlayer.currentBet}</Text>
-                          )}
-                      </>
+                        <View style={styles.infos}>
+                            <Text style={styles.info}>Name : {myPlayer.name}</Text>
+                            <Text style={styles.info}>Bank : {money}</Text>
+                            {myPlayer.currentBet && (
+                                <Text style={styles.info}>Bet : {myPlayer.currentBet}</Text>
+                            )}
+                        </View>
                     )}
-                    {hand.map((card, index) => (
-                        <CardImage key={index} card={card} style={styles.card}/>
-                    ))}
+                    <View style={own.cards}>
+                        {hand.map((card, index) => (
+                          <CardImage key={index} card={card} style={styles.card}/>
+                        ))}
+                    </View>
                 </View>
 
-                {enemyPlayers.map((player, index) => (
-                    <View key={index} style={getCardStyle(player.name)}>
-                        <Text style={styles.playerName}>{player.name}</Text>
-                        {player.currentBet && (
-                          <Text style={styles.playerMoney}>{player.currentBet}</Text>
-                        )}
-                        <CardImage card={"back"} style={styles.card}/>
-                        <CardImage card={"back"} style={styles.card}/>
-                    </View>
-                ))}
+                {enemyPlayers.map((player, index) => {
+                    const enemy= getCardStyle(player.name);
+                    return(
+                        <View key={index} style={enemy.container}>
+                            <View style={[styles.infos, enemy.infos]}>
+                                <Text style={styles.info}>Name : {player.name}</Text>
+                                {player.currentBet && (
+                                    <Text style={styles.info}>Bet : {player.currentBet}</Text>
+                                )}
+                            </View>
+                            <View style={enemy.cards}>
+                                <CardImage card={"back"} style={styles.card}/>
+                                <CardImage card={"back"} style={styles.card}/>
+                            </View>
+                        </View>
+                    )
+                })}
 
-                <View style={styles.info}>
+                <View style={styles.info_container}>
                     <Text style={{color: "white"}}>{playing ? "Your turn" : "Waiting"}</Text>
                     {playing && (
                         <View>
@@ -193,6 +202,72 @@ export default function Game({route}: any) {
     );
 }
 
+const own = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        display: 'flex',
+        alignItems: 'center',
+        margin: 'auto',
+        top: '80%'
+    },
+    cards: {
+        display: 'flex',
+        flexDirection: 'row',
+    }
+});
+
+const enemy1 = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        display: 'flex',
+        justifyContent: 'center',
+        margin: 'auto',
+        bottom: '80%',
+    },
+    infos: {},
+    cards: {
+        display: 'flex',
+        flexDirection: 'row',
+        transform: [{rotateZ: '180deg'}],
+    }
+})
+const enemy2 = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        display: 'flex',
+        justifyContent: 'center',
+        margin: 'auto',
+        right: '79%',
+    },
+    infos: {
+        marginBottom: 25,
+        marginLeft: 32
+    },
+    cards: {
+        display: 'flex',
+        flexDirection: 'row',
+        transform: [{rotateZ: '-90deg'}],
+    }
+})
+const enemy3 = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        display: 'flex',
+        justifyContent: 'center',
+        margin: 'auto',
+        left: '79%',
+    },
+    infos: {
+        marginBottom: 25,
+        marginLeft: 32
+    },
+    cards: {
+        display: 'flex',
+        flexDirection: 'row',
+        transform: [{rotateZ: '90deg'}],
+    }
+})
+
 const styles = StyleSheet.create({
     background: {
         display: 'flex',
@@ -224,44 +299,17 @@ const styles = StyleSheet.create({
         width: 80,
         height: 120
     },
-    ownCard: {
-        position: 'absolute',
+    infos: {
         display: 'flex',
         flexDirection: 'row',
-        margin: 'auto',
-        top: '80%'
     },
-    ownMoney: {
-        position: 'absolute',
-        top: '2%',
-        right: '2%',
-        color: 'white'
-    },
-    enemyCard1: {
-        position: 'absolute',
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        bottom: '80%',
-        margin: 'auto',
-    },
-    enemyCard2: {
-        position: 'absolute',
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        transform: [{rotateZ: '-90deg'}],
-        margin: 'auto',
-        right: '80%',
-    },
-    enemyCard3: {
-        position: 'absolute',
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        transform: [{rotateZ: '90deg'}],
-        margin: 'auto',
-        left: '80%',
+    info: {
+        backgroundColor: "rgba(0,0,0,0.5)",
+        color: "white",
+        textAlign: "center",
+        borderRadius: 5,
+        marginRight: 10,
+        padding: 5
     },
     tokens: {
         position: "absolute",
@@ -274,7 +322,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50
     },
-    info: {
+    info_container: {
         display: 'flex',
         flexDirection: 'column',
         bottom: 250,
@@ -301,31 +349,5 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
-    },
-    playerName: {
-        position: 'absolute',
-        display: 'flex',
-        alignItems: "center",
-        justifyContent: "center",
-        top: -20,
-        width: 80,
-
-        backgroundColor: "rgba(0,0,0,0.5)",
-        color: "white",
-        textAlign: "center",
-        borderRadius: 5,
-    },
-    playerMoney: {
-        position: 'absolute',
-        display: 'flex',
-        alignItems: "center",
-        justifyContent: "center",
-        bottom: -20,
-        width: 80,
-
-        backgroundColor: "rgba(0,0,0,0.5)",
-        color: "white",
-        textAlign: "center",
-        borderRadius: 5,
     }
 });
