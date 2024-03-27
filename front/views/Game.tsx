@@ -9,14 +9,14 @@ import Slider from "@react-native-community/slider";
 
 
 export default function Game({route}: any) {
-    const [orientation, setOrientation] = useState(1);
+    const playerName = route.params.playerName;
     const {socket} = useWebSocket();
-    const [myself, setMyself] = useState(route.params.playerName);
+    const [orientation, setOrientation] = useState(1);
     const [hand, setHand] = useState<Card[]>([]);
     const [flop, setFlop] = useState<Card[]>([]);
     const [turn, setTurn] = useState<Card[]>([]);
     const [river, setRiver] = useState<Card[]>([]);
-    const [players, setPlayers] = useState<any[]>([]);
+    const [myPlayer, setMyPlayer] = useState<any>(null);
     const [enemyPlayers, setEnemyPlayers] = useState<any[]>([]);
     const [playing, setPlaying] = useState<boolean>(false);
     const [money, setMoney] = useState<number>(0);
@@ -56,14 +56,14 @@ export default function Game({route}: any) {
 
             if (received.playing) {
                 console.log("set received.playing.name: ", received.playing.name)
-                setPlaying(received.playing.name === myself);
+                setPlaying(received.playing.name === playerName);
             }
 
             if (received.players) {
                 console.log("set received.players: ", received.players)
-                setPlayers(received.players);
-                setEnemyPlayers(received.players.filter((p: any) => p.name !== myself));
-                setMoney(received.players.find((p: any) => p.name === myself).money);
+                setMyPlayer(received.players.find((p: any) => p.name === playerName));
+                setEnemyPlayers(received.players.filter((p: any) => p.name !== playerName));
+                setMoney(received.players.find((p: any) => p.name === playerName).money);
             }
         });
     }, []);
@@ -80,7 +80,7 @@ export default function Game({route}: any) {
 
     const Bet = () => {
         socket.emit("player-action", {
-            player: myself,
+            player: playerName,
             action: "bet",
             amount: betValue
         });
@@ -90,7 +90,7 @@ export default function Game({route}: any) {
     const Fold = () => {
         console.log("fold");
         socket.emit("player-action", {
-            player: myself,
+            player: playerName,
             action: "fold",
         })
     }
@@ -131,6 +131,14 @@ export default function Game({route}: any) {
                 </View>
 
                 <View style={styles.ownCard}>
+                    {myPlayer && (
+                      <>
+                          <Text style={styles.playerName}>{myPlayer.name}</Text>
+                          {myPlayer.currentBet && (
+                            <Text style={styles.playerMoney}>{myPlayer.currentBet}</Text>
+                          )}
+                      </>
+                    )}
                     {hand.map((card, index) => (
                         <CardImage key={index} card={card} style={styles.card}/>
                     ))}

@@ -4,7 +4,7 @@ import { useWebSocket } from "../context/socket.context";
 import { useEffect, useState } from "react";
 import { waitingRoomStyles } from '../styles/WaitingRoomStyles';
 import { commonStyles } from '../styles/CommonStyles';
-import logo from '../assets/Logo.png';
+import logo from '../assets/logo.png';
 import React from "react";
 
 export default function WaitingRoom({ route, navigation }: any) {

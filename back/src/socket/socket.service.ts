@@ -128,7 +128,7 @@ export class SocketService {
           const game = await this.gameService.findGame(socket.roomCode);
           game?.players.forEach((p) => {
             if (p.name === data.player) {
-              p.currentBet = data.amount;
+              p.currentBet += data.amount;
               p.money -= data.amount;
             }
             this.gameService.updateGame(game);

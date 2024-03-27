@@ -3,7 +3,7 @@ import { Button, TextInput, View, Modal, Text, TouchableOpacity, Image } from "r
 import { LinearGradient } from "expo-linear-gradient";
 import { useWebSocket } from "../context/socket.context";
 import { homeStyles } from "../styles/HomeStyles";
-import logo from '../assets/Logo.png';
+import logo from '../assets/logo.png';
 
 export default function Home({ navigation }: any) {
   const { createRoom, joinRoom } = useWebSocket();
